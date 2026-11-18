@@ -1,179 +1,145 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { useRef, useState } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
-import { ELFSIGHT_INSTAGRAM_ID } from "@/lib/content";
+import {
+  INSTAGRAM_POSTS,
+  INSTAGRAM_PROFILE,
+  instagramPostUrl,
+  type InstagramPost,
+} from "@/lib/social-feeds";
 
 const ITEM_WIDTH = 240;
 const GAP = 14;
 const COMPACT_COUNT = 3;
 
-const FEED_CSS = `
-  .eapps-instagram-feed-container,
-  .eapps-instagram-feed-posts {
-    height: auto !important;
-    max-height: none !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scrollbar-width: none !important;
-  }
-  .eapps-instagram-feed-container::-webkit-scrollbar,
-  .eapps-instagram-feed-posts::-webkit-scrollbar {
-    display: none !important;
-  }
-  .eapps-instagram-feed-posts-grid {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    gap: ${GAP}px !important;
-    overflow: visible !important;
-    scroll-snap-type: x mandatory !important;
-  }
-  .eapps-instagram-feed-posts-item {
-    flex: 0 0 ${ITEM_WIDTH}px !important;
-    width: ${ITEM_WIDTH}px !important;
-    min-width: ${ITEM_WIDTH}px !important;
-    max-width: ${ITEM_WIDTH}px !important;
-    aspect-ratio: 1 / 1 !important;
-    scroll-snap-align: start !important;
-  }
-  @media (max-width: 640px) {
-    .eapps-instagram-feed-posts,
-    .eapps-instagram-feed-posts-grid {
-      display: flex !important;
-      flex-direction: row !important;
-      flex-wrap: nowrap !important;
-      overflow-x: auto !important;
-      overflow-y: hidden !important;
-    }
-    .eapps-instagram-feed-posts-grid {
-      scroll-snap-type: none !important;
-    }
-    .eapps-instagram-feed-posts-item,
-    .eapps-instagram-feed-posts-item-list,
-    .eapps-instagram-feed-posts-items-item {
-      flex: 0 0 74vw !important;
-      width: 74vw !important;
-      min-width: 74vw !important;
-      max-width: 74vw !important;
-      aspect-ratio: 1 / 1 !important;
-    }
-    .eapps-instagram-feed-posts {
-      -webkit-overflow-scrolling: touch !important;
-      overscroll-behavior-x: contain !important;
-      touch-action: pan-x !important;
-    }
-    .eapps-instagram-feed-posts-pagination,
-    .eapps-instagram-feed-posts-slider-pagination,
-    .eapps-instagram-feed-posts-navigation {
-      display: none !important;
-    }
-  }
-  :host([data-elfsight-show="compact"]) .eapps-instagram-feed-posts-item:nth-child(n+${COMPACT_COUNT + 1}) {
-    display: none !important;
-  }
-  :host([data-elfsight-show="compact"]) .eapps-instagram-feed-posts-grid {
-    justify-content: center !important;
-  }
-`;
-
-const HEAD_CSS = `
-  .elfsight-app-${ELFSIGHT_INSTAGRAM_ID} .eapps-instagram-feed-posts-item:nth-child(n+${COMPACT_COUNT + 1}) {
-    display: none !important;
-  }
-  .elfsight-app-${ELFSIGHT_INSTAGRAM_ID}[data-elfsight-show="all"] .eapps-instagram-feed-posts-item {
-    display: block !important;
-  }
-`;
-
-function findShadowRoot(root: HTMLElement): ShadowRoot | null {
-  if (root.shadowRoot) return root.shadowRoot;
-  for (const child of Array.from(root.querySelectorAll("*"))) {
-    if ((child as HTMLElement).shadowRoot) return (child as HTMLElement).shadowRoot;
-  }
-  return null;
-}
-
-function widgetElements(): HTMLElement[] {
-  return Array.from(
-    document.querySelectorAll<HTMLElement>(
-      `[class*="${ELFSIGHT_INSTAGRAM_ID}"], eapps-instagram-feed, [data-elfsight-app-lazy]`
-    )
+function InstagramGlyph({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" />
+    </svg>
   );
 }
 
-function findScroller(): HTMLElement | null {
-  for (const el of widgetElements()) {
-    const scroller = el.querySelector<HTMLElement>(
-      ".eapps-instagram-feed-posts, .eapps-instagram-feed-container, .eapps-instagram-feed-items"
-    );
-    if (scroller) return scroller;
-  }
-  return null;
+function TypeBadge({ type }: { type: InstagramPost["type"] }) {
+  return (
+    <span className="absolute right-2.5 top-2.5 text-white drop-shadow" aria-hidden>
+      {type === "video" ? (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="4" />
+          <path d="M10 8.5v7l6-3.5-6-3.5z" fill="currentColor" />
+        </svg>
+      ) : (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+          <rect x="7" y="7" width="14" height="14" rx="3" />
+          <path d="M4 16V6a2 2 0 0 1 2-2h10" strokeLinecap="round" />
+        </svg>
+      )}
+    </span>
+  );
 }
 
 export function InstagramFeed() {
-  const hostRef = useRef<HTMLDivElement>(null);
-  const feedHostRef = useRef<HTMLElement | null>(null);
-  const expandedRef = useRef(false);
+  const scrollerRef = useRef<HTMLDivElement>(null);
   const [expanded, setExpanded] = useState(false);
-
-  useEffect(() => {
-    expandedRef.current = expanded;
-    hostRef.current?.setAttribute("data-elfsight-show", expanded ? "all" : "compact");
-    feedHostRef.current?.setAttribute("data-elfsight-show", expanded ? "all" : "compact");
-  }, [expanded]);
-
-  useEffect(() => {
-    const ensureHeadStyle = () => {
-      if (document.querySelector("style[data-elfsight-feed-css]")) return;
-      const style = document.createElement("style");
-      style.setAttribute("data-elfsight-feed-css", "");
-      style.textContent = HEAD_CSS;
-      document.head.appendChild(style);
-    };
-
-    const apply = () => {
-      ensureHeadStyle();
-      for (const el of widgetElements()) {
-        const shadow = findShadowRoot(el);
-        if (shadow) {
-          if (!shadow.querySelector("style[data-elfsight-style]")) {
-            const style = document.createElement("style");
-            style.setAttribute("data-elfsight-style", "");
-            style.textContent = FEED_CSS;
-            shadow.appendChild(style);
-          }
-          const hostEl = shadow.host as HTMLElement;
-          feedHostRef.current = hostEl;
-          hostEl.setAttribute("data-elfsight-show", expandedRef.current ? "all" : "compact");
-        }
-      }
-    };
-
-    apply();
-    // The widget hydrates asynchronously, so retry until its shadow root
-    // appears — then stop polling. Previously this interval ran forever
-    // (DOM-wide queries every 800ms for the life of the page). Cap the
-    // retries as a fallback so a blocked widget can't poll indefinitely.
-    let attempts = 0;
-    const timer = setInterval(() => {
-      attempts += 1;
-      apply();
-      if (feedHostRef.current || attempts >= 75) {
-        clearInterval(timer);
-      }
-    }, 800);
-    return () => clearInterval(timer);
-  }, []);
+  const posts = expanded ? INSTAGRAM_POSTS : INSTAGRAM_POSTS.slice(0, COMPACT_COUNT);
 
   const scrollFeed = (dir: 1 | -1) => {
-    findScroller()?.scrollBy({ left: dir * (ITEM_WIDTH + GAP), behavior: "smooth" });
+    scrollerRef.current?.scrollBy({ left: dir * (ITEM_WIDTH + GAP), behavior: "smooth" });
   };
 
   return (
     <div className="relative">
-      <div ref={hostRef} className={`elfsight-app-${ELFSIGHT_INSTAGRAM_ID}`} data-elfsight-app-lazy />
+      {/* Profile header */}
+      <div className="mb-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-emerald-950">
+        <a
+          href={INSTAGRAM_PROFILE.url}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-3"
+          aria-label={`${INSTAGRAM_PROFILE.name} on Instagram`}
+        >
+          <span className="rounded-full bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#962fbf] p-[2px]">
+            <span className="block overflow-hidden rounded-full border-2 border-cream-50 bg-cream-50">
+              <Image
+                src={INSTAGRAM_PROFILE.avatar}
+                alt=""
+                width={44}
+                height={44}
+                className="h-11 w-11 object-cover"
+              />
+            </span>
+          </span>
+          <span className="text-left leading-tight">
+            <span className="block text-base font-bold">{INSTAGRAM_PROFILE.handle}</span>
+            <span className="block text-sm text-emerald-950/70">{INSTAGRAM_PROFILE.name}</span>
+          </span>
+        </a>
+
+        <dl className="flex items-center gap-5 text-center leading-tight">
+          {[
+            [INSTAGRAM_PROFILE.posts, "posts"],
+            [INSTAGRAM_PROFILE.followers, "followers"],
+            [INSTAGRAM_PROFILE.following, "following"],
+          ].map(([value, label]) => (
+            <div key={label}>
+              <dt className="sr-only">{label}</dt>
+              <dd className="text-sm font-bold">{value}</dd>
+              <dd className="text-xs text-emerald-950/70" aria-hidden>
+                {label}
+              </dd>
+            </div>
+          ))}
+        </dl>
+
+        <a
+          href={INSTAGRAM_PROFILE.url}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-2 rounded-lg bg-[#0095f6] px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1877f2]"
+        >
+          <InstagramGlyph size={16} />
+          Follow
+        </a>
+      </div>
+
+      {/* Posts */}
+      <div
+        ref={scrollerRef}
+        className="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        style={{ gap: GAP }}
+      >
+        {posts.map((post, i) => (
+          <a
+            key={post.id}
+            href={instagramPostUrl(post.id)}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`View Instagram post ${i + 1} from @${INSTAGRAM_PROFILE.handle}`}
+            className={`group relative aspect-square w-[74vw] shrink-0 snap-start overflow-hidden rounded-xl bg-[#f5f5f7] sm:w-[240px] ${
+              i === 0 ? "ml-auto" : ""
+            } ${i === posts.length - 1 ? "mr-auto" : ""}`}
+          >
+            <Image
+              src={post.image}
+              alt={`Instagram post by @${INSTAGRAM_PROFILE.handle}`}
+              fill
+              sizes="(max-width: 640px) 74vw, 240px"
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            />
+            <TypeBadge type={post.type} />
+            <span className="absolute inset-0 flex items-center justify-center gap-1.5 bg-[rgba(158,230,171,0.9)] text-sm font-semibold text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                <path d="M12 21s-7.5-4.6-9.6-9.2C1 8.6 2.9 5 6.3 5c2 0 3.4 1 4.2 2.3h3C14.3 6 15.7 5 17.7 5c3.4 0 5.3 3.6 3.9 6.8C19.5 16.4 12 21 12 21z" />
+              </svg>
+              {post.likes ?? ""}
+            </span>
+          </a>
+        ))}
+      </div>
 
       <button
         type="button"

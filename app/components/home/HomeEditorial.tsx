@@ -3,7 +3,6 @@
 import { motion, useScroll, useTransform, type Variants } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import Script from "next/script";
 import { useRef } from "react";
 import {
   ArrowUpRight,
@@ -22,9 +21,10 @@ import {
   Wifi,
   type LucideIcon,
 } from "lucide-react";
-import { brand, brandIntro, ELFSIGHT_GOOGLE_REVIEWS_ID } from "@/lib/content";
+import { brand, brandIntro } from "@/lib/content";
 import { LazyYouTube } from "../LazyYouTube";
 import { InstagramFeed } from "./InstagramFeed";
+import { GoogleReviewsFeed } from "./GoogleReviewsFeed";
 import { RoomsCarousel } from "./RoomsCarousel";
 
 const fadeUp: Variants = {
@@ -505,12 +505,10 @@ whileInView="show"
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="mx-auto mt-12 max-w-[1100px] rounded-[1.75rem] border border-emerald-900/10 bg-white/60 p-3 sm:p-5"
           >
-            <div className={`elfsight-app-${ELFSIGHT_GOOGLE_REVIEWS_ID}`} data-elfsight-app-lazy />
+            <GoogleReviewsFeed />
           </motion.div>
         </div>
       </section>
-
-      <Script src="https://elfsightcdn.com/platform.js" strategy="lazyOnload" />
     </div>
   );
 }

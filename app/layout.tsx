@@ -131,7 +131,6 @@ export default async function RootLayout({
         {/* Early connection setup for the only third-party hosts used on
             public pages. No preloads — just cheaper handshakes when the
             deferred scripts/widgets request them. */}
-        <link rel="preconnect" href="https://elfsightcdn.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
       </head>
       <body className="bg-forest-900 text-parchment/90 min-h-screen font-sans antialiased">
