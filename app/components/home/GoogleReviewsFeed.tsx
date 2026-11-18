@@ -201,7 +201,7 @@ export function GoogleReviewsFeed() {
 
   return (
     <div className="text-[#111]">
-      <h3 className="mb-6 text-center text-2xl font-bold">{SUMMARY.title}</h3>
+      <h3 className="mb-6 text-center text-2xl font-bold text-[#111]">{SUMMARY.title}</h3>
 
       {/* Rating bar */}
       <div
