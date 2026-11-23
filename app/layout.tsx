@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Raleway } from "next/font/google";
 import {
   getHeroImageJsonLd,
   getLodgingBusinessJsonLd,
@@ -9,15 +8,6 @@ import {
 import { BookClickTracker } from "./components/BookClickTracker";
 import { ImageErrorFallback } from "./components/ImageErrorFallback";
 import "./globals.css";
-
-const raleway = Raleway({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-raleway", // This injects the CSS variable --font-raleway
-  // Only weights actually used on the site (400/500/600/700/800/900).
-  // 100/200/300 were never requested — dropping them shrinks the font payload.
-  weight: ["400", "500", "600", "700", "800", "900"],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.thehimalayanshire.com"),
@@ -97,7 +87,7 @@ export default function RootLayout({
 }>) {
 
   return (
-    <html lang="en" className={raleway.variable}>
+    <html lang="en">
       <head>
         <script
           type="application/ld+json"
@@ -114,6 +104,7 @@ export default function RootLayout({
         {/* Early connection setup for the only third-party hosts used on
             public pages. No preloads — just cheaper handshakes when the
             deferred scripts/widgets request them. */}
+        <link rel="preload" href="/fonts/raleway-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
       </head>
       <body className="bg-forest-900 text-parchment/90 min-h-screen font-sans antialiased">

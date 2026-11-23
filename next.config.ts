@@ -7,7 +7,7 @@ import type { NextConfig } from "next";
 // removing repeat round-trips. (Replace-in-place updates propagate within
 // a day; new filenames bust immediately.) Hashed /_next/static assets keep
 // their immutable defaults, and HTML/API responses are unaffected.
-const CACHEABLE_EXTENSIONS = ["mp4", "webm", "jpg", "jpeg", "png", "webp", "avif", "svg", "gif", "ico"];
+const CACHEABLE_EXTENSIONS = ["woff2", "mp4", "webm", "jpg", "jpeg", "png", "webp", "avif", "svg", "gif", "ico"];
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
