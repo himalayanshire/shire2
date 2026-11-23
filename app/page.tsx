@@ -1,6 +1,5 @@
 import { SiteNav } from "./components/SiteNav";
 import { SiteFooter } from "./components/SiteFooter";
-import { FloatingActions } from "./components/FloatingActions";
 import { Hero } from "./components/home/Hero";
 import { HomeEditorial } from "./components/home/HomeEditorial";
 import { getHomepageSections } from "@/lib/homepage-content";
@@ -32,7 +31,6 @@ export default async function Home() {
         <HomeEditorial content={content} galleryFrames={galleryFrames} rooms={rooms} />
       </main>
       <SiteFooter />
-      <FloatingActions />
     </>
   );
 }

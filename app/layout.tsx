@@ -7,6 +7,7 @@ import {
 } from "@/lib/property";
 import { BookClickTracker } from "./components/BookClickTracker";
 import { ImageErrorFallback } from "./components/ImageErrorFallback";
+import { FloatingActions } from "./components/FloatingActions";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -143,6 +144,7 @@ export default function RootLayout({
         <BookClickTracker />
         <ImageErrorFallback />
         {children}
+        <FloatingActions />
       </body>
     </html>
   );

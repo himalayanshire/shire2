@@ -2,18 +2,24 @@
 
 import { motion } from "framer-motion";
 import { brand } from "@/lib/content";
+import { ShireChat } from "./shire/ShireChat";
 
+/**
+ * Floating actions, site-wide:
+ *  - bottom-left: Call + WhatsApp
+ *  - bottom-right: "Shire" chat assistant
+ */
 export function FloatingActions() {
   return (
-    <div className="fixed inset-x-0 bottom-6 z-40 pointer-events-none">
-      <div className="container-luxe flex items-end justify-between pointer-events-none">
+    <>
+      <div className="pointer-events-none fixed bottom-4 left-4 z-40 flex flex-col items-center gap-3 sm:bottom-6 sm:left-6">
         <motion.a
           href={brand.phoneHref[0]}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 0.6 }}
-          className="pointer-events-auto inline-flex items-center justify-center h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-emerald-800 text-cream-50 shadow-lg transition-all duration-300 hover:bg-emerald-700 hover:scale-110"
-          aria-label="Call the shire"
+          className="pointer-events-auto inline-flex h-12 w-12 items-center justify-center rounded-full bg-emerald-800 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-emerald-700 sm:h-14 sm:w-14"
+          aria-label="Call The Himalayan Shire"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
             <path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2z" fill="currentColor" />
@@ -27,7 +33,7 @@ export function FloatingActions() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.3, duration: 0.6 }}
-          className="pointer-events-auto inline-flex items-center justify-center h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-[#25D366] text-white shadow-lg transition-all duration-300 hover:scale-110"
+          className="pointer-events-auto inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-all duration-300 hover:scale-110 sm:h-14 sm:w-14"
           aria-label="Chat on WhatsApp"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -35,6 +41,8 @@ export function FloatingActions() {
           </svg>
         </motion.a>
       </div>
-    </div>
+
+      <ShireChat />
+    </>
   );
 }

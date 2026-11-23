@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { SiteNav } from "../components/SiteNav";
 import { SiteFooter } from "../components/SiteFooter";
-import { FloatingActions } from "../components/FloatingActions";
 import { GalleryPageContent } from "../components/gallery/GalleryPageContent";
 import { getPublishedGalleryItems } from "@/lib/gallery";
 import { getHomepageSections } from "@/lib/homepage-content";
@@ -53,7 +52,6 @@ export default async function GalleryPage() {
         <GalleryPageContent items={items} heroImage={heroImage} />
       </main>
       <SiteFooter />
-      <FloatingActions />
     </>
   );
 }
