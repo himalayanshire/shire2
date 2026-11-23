@@ -6,7 +6,6 @@ import { GalleryPageContent } from "../components/gallery/GalleryPageContent";
 import { getPublishedGalleryItems } from "@/lib/gallery";
 import { getHomepageSections } from "@/lib/homepage-content";
 
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Gallery | The Himalayan Shire",

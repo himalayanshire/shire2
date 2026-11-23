@@ -1,195 +1,55 @@
-import { prisma } from "./prisma";
-import { normalizeMediaUrl } from "./media-store";
-import type { GalleryItem, GalleryItemInput } from "./gallery-types";
+import type { GalleryItem } from "./gallery-types";
 
 /* ------------------------------------------------------------------ */
-/*  CRUD operations                                                    */
+/*  Gallery — static. Images live in /public/gallery; the list and     */
+/*  order below are what the former CMS served (same order as the      */
+/*  seed). To add a photo: drop it in /public/gallery and add its      */
+/*  filename here.                                                     */
 /* ------------------------------------------------------------------ */
 
-/** Get all gallery items (summary order ascending) */
-export async function getAllGalleryItems(
-  includeHidden = false
-): Promise<GalleryItem[]> {
-  const items = await prisma.galleryItem.findMany({
-    where: includeHidden ? undefined : { status: "published" },
-    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
-  });
+const GALLERY_FILES = [
+  "attic-area-common.jpg",
+  "bonfire.jpg",
+  "common-balcony.jpg",
+  "common-balcony-with-swing.jpg",
+  "common-seating-first-floor.jpg",
+  "decor.png",
+  "dining-area.jpg",
+  "enchanting-winter-views.jpg",
+  "ground-floor-lobby.jpg",
+  "himachali-style-seating.jpg",
+  "indoor-games.jpeg",
+  "lawn-with-outdoor-seating-1.jpg",
+  "mesmerizing-views.jpg",
+  "reception-area.png",
+  "recreational-hall.jpg",
+  "snow-view.jpg",
+  "sunrise-view.png",
+  "surrounded-by-greenery.jpg",
+  "tv-lounge.jpg",
+  "winters.jpg",
+];
 
-  return items.map((i) => ({
-    id: i.id,
-    title: i.title,
-    caption: i.caption ?? undefined,
-    category: i.category,
-    alt: i.alt ?? undefined,
-    src: normalizeMediaUrl(i.src),
-    order: i.order,
-    status: (i.status as "published" | "hidden") ?? "published",
-    createdAt: i.createdAt.toISOString(),
-    updatedAt: i.updatedAt.toISOString(),
-  }));
-}
+const STAMP = "2026-01-01T00:00:00.000Z";
 
-/** Get a single gallery item by id */
-export async function getGalleryItemById(
-  id: string
-): Promise<GalleryItem | null> {
-  const item = await prisma.galleryItem.findUnique({
-    where: { id },
-  });
-
-  if (!item) return null;
-
-  return {
-    id: item.id,
-    title: item.title,
-    caption: item.caption ?? undefined,
-    category: item.category,
-    alt: item.alt ?? undefined,
-    src: normalizeMediaUrl(item.src),
-    order: item.order,
-    status: (item.status as "published" | "hidden") ?? "published",
-    createdAt: item.createdAt.toISOString(),
-    updatedAt: item.updatedAt.toISOString(),
-  };
-}
-
-/** Get the next display order value for new items */
-async function nextOrder(): Promise<number> {
-  const max = await prisma.galleryItem.aggregate({
-    _max: { order: true },
-  });
-  return (max._max.order ?? -1) + 1;
-}
-
-/** Create a new gallery item */
-export async function createGalleryItem(
-  input: GalleryItemInput
-): Promise<GalleryItem> {
-  if (!input.title || !input.src) {
-    throw new Error("Title and image are required");
-  }
-
-  const src = normalizeMediaUrl(input.src);
-  const existing = await prisma.galleryItem.findUnique({
-    where: { src },
-  });
-  if (existing) {
-    throw new Error(`A gallery item with this image already exists`);
-  }
-
-  const item = await prisma.galleryItem.create({
-    data: {
-      title: input.title,
-      caption: input.caption ?? null,
-      category: input.category || "Common Spaces",
-      alt: input.alt ?? null,
-      src,
-      order:
-        typeof input.order === "number" ? input.order : await nextOrder(),
-      status: (input.status || "published") as string,
-    },
-  });
-
-  return {
-    id: item.id,
-    title: item.title,
-    caption: item.caption ?? undefined,
-    category: item.category,
-    alt: item.alt ?? undefined,
-    src: normalizeMediaUrl(item.src),
-    order: item.order,
-    status: (item.status as "published" | "hidden") ?? "published",
-    createdAt: item.createdAt.toISOString(),
-    updatedAt: item.updatedAt.toISOString(),
-  };
-}
-
-/** Update an existing gallery item */
-export async function updateGalleryItem(
-  id: string,
-  input: Partial<GalleryItemInput>
-): Promise<GalleryItem | null> {
-  const existing = await prisma.galleryItem.findUnique({
-    where: { id },
-  });
-  if (!existing) return null;
-
-  if (
-    input.src &&
-    normalizeMediaUrl(input.src) !== normalizeMediaUrl(existing.src)
-  ) {
-    const srcExists = await prisma.galleryItem.findUnique({
-      where: { src: normalizeMediaUrl(input.src) },
-    });
-    if (srcExists) {
-      throw new Error(`A gallery item with this image already exists`);
-    }
-  }
-
-  const updated = await prisma.galleryItem.update({
-    where: { id },
-    data: {
-      title: input.title,
-      caption: input.caption === undefined ? undefined : input.caption ?? null,
-      category: input.category,
-      alt: input.alt === undefined ? undefined : input.alt ?? null,
-      src: input.src === undefined ? undefined : normalizeMediaUrl(input.src),
-      order: input.order,
-      status: input.status as string | undefined,
-      updatedAt: new Date(),
-    },
-  });
-
-  return {
-    id: updated.id,
-    title: updated.title,
-    caption: updated.caption ?? undefined,
-    category: updated.category,
-    alt: updated.alt ?? undefined,
-    src: normalizeMediaUrl(updated.src),
-    order: updated.order,
-    status: (updated.status as "published" | "hidden") ?? "published",
-    createdAt: updated.createdAt.toISOString(),
-    updatedAt: updated.updatedAt.toISOString(),
-  };
-}
-
-/** Delete a gallery item */
-export async function deleteGalleryItem(id: string): Promise<boolean> {
-  const item = await prisma.galleryItem.findUnique({
-    where: { id },
-  });
-  if (!item) return false;
-
-  await prisma.galleryItem.delete({ where: { id } });
-  return true;
-}
-
-/** Swap the display order of two gallery items */
-export async function swapGalleryOrder(
-  idA: string,
-  idB: string
-): Promise<boolean> {
-  const [a, b] = await Promise.all([
-    prisma.galleryItem.findUnique({ where: { id: idA } }),
-    prisma.galleryItem.findUnique({ where: { id: idB } }),
-  ]);
-  if (!a || !b) return false;
-
-  await prisma.$transaction([
-    prisma.galleryItem.update({ where: { id: a.id }, data: { order: b.order } }),
-    prisma.galleryItem.update({ where: { id: b.id }, data: { order: a.order } }),
-  ]);
-  return true;
-}
+const GALLERY_ITEMS: GalleryItem[] = GALLERY_FILES.map((file, index) => ({
+  id: `gallery-${index}`,
+  title: titleFromFile(file),
+  category: categoryFromFile(file),
+  src: `/gallery/${file}`,
+  order: index,
+  status: "published",
+  createdAt: STAMP,
+  updatedAt: STAMP,
+}));
 
 /** Get published gallery items for the public pages */
 export async function getPublishedGalleryItems(): Promise<GalleryItem[]> {
-  return getAllGalleryItems(false);
+  return GALLERY_ITEMS;
 }
 
 /* ------------------------------------------------------------------ */
-/*  Helpers (shared with the public gallery page fallback + seeding)   */
+/*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
 
 export function titleFromFile(file: string): string {

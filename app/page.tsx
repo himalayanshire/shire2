@@ -7,7 +7,6 @@ import { getHomepageSections } from "@/lib/homepage-content";
 import { getPublishedGalleryItems } from "@/lib/gallery";
 import { getMergedRooms } from "@/lib/room-content";
 
-export const dynamic = "force-dynamic";
 
 export default async function Home() {
   // Independent queries — fetch in parallel instead of three sequential

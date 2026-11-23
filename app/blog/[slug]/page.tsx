@@ -7,7 +7,12 @@ import { SiteNav } from "../../components/SiteNav";
 import { SiteFooter } from "../../components/SiteFooter";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+export async function generateStaticParams() {
+  const posts = await getPublishedBlogs();
+  return posts.map((post) => ({ slug: post.slug }));
+}
+
+export const dynamicParams = false;
 
 export async function generateMetadata({
   params,

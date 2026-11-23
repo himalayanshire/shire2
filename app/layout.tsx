@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Raleway } from "next/font/google";
-import { prisma } from "@/lib/prisma";
 import {
   getHeroImageJsonLd,
   getLodgingBusinessJsonLd,
@@ -86,32 +85,16 @@ const JSONLD = getLodgingBusinessJsonLd();
 const WEBSITE_JSONLD = getWebSiteJsonLd();
 const HERO_IMAGE_JSONLD = getHeroImageJsonLd();
 
-async function getGtmId(): Promise<string | null> {
-  try {
-    const row = await prisma.setting.findUnique({ where: { key: "google_tag_manager_id" } });
-    return row?.value?.trim() || process.env.NEXT_PUBLIC_GTM_ID?.trim() || null;
-  } catch {
-    return process.env.NEXT_PUBLIC_GTM_ID?.trim() || null;
-  }
-}
+// Analytics IDs used to live in the CMS settings table; they are static now.
+// NEXT_PUBLIC_GTM_ID / NEXT_PUBLIC_GA4_ID override these defaults.
+const gtmId: string | null = process.env.NEXT_PUBLIC_GTM_ID?.trim() || "GTM-KNHVLMTK";
+const gaId: string | null = process.env.NEXT_PUBLIC_GA4_ID?.trim() || "G-WQXYHL162K";
 
-async function getGaId(): Promise<string | null> {
-  try {
-    const row = await prisma.setting.findUnique({ where: { key: "google_analytics_id" } });
-    return row?.value?.trim() || process.env.NEXT_PUBLIC_GA4_ID?.trim() || null;
-  } catch {
-    return process.env.NEXT_PUBLIC_GA4_ID?.trim() || null;
-  }
-}
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // The two ID lookups are independent — run them in parallel so the
-  // layout never pays for two sequential DB round-trips on every page.
-  const [gtmId, gaId] = await Promise.all([getGtmId(), getGaId()]);
 
   return (
     <html lang="en" className={raleway.variable}>

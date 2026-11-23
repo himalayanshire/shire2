@@ -2,7 +2,6 @@ import { getPublishedBlogs } from "@/lib/blogs";
 import BlogListingClient from "../components/BlogListingClient";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Fagu Travel Guides & Stories | The Himalayan Shire",

@@ -5,7 +5,6 @@ import { getPageContent } from "@/lib/page-content";
 import { ACTIVITIES_PAGE_KEY, mergeActivities } from "@/lib/activities-content";
 import { activitiesMetadata } from "../metadata";
 
-export const dynamic = "force-dynamic";
 
 export function generateMetadata() {
   return activitiesMetadata();

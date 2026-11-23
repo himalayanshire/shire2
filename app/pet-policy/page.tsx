@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import PetPolicyContent from "./PetPolicyContent";
 
-export const dynamic = "force-dynamic";
 
 const TITLE = "Pet Policy | The Himalayan Shire";
 const DESCRIPTION =

@@ -3,7 +3,6 @@ import { faqMetadata } from "../metadata";
 import FaqPageContent from "./FaqPageContent";
 import { getFaqJsonLd } from "@/lib/faq";
 
-export const dynamic = "force-dynamic";
 
 export function generateMetadata(): Metadata {
   return faqMetadata();

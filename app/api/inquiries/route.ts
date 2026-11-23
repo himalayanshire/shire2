@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
 
 const INQUIRY_TO_EMAIL = "himalayanshire@gmail.com";
 
@@ -40,19 +39,6 @@ export async function POST(req: NextRequest) {
 
   const inquiry = parsed.data;
   const message = formatInquiryMessage(inquiry);
-
-  try {
-    await prisma.contactMessage.create({
-      data: {
-        name: inquiry.name,
-        email: inquiry.email || "",
-        subject: "Website inquiry form",
-        message,
-      },
-    });
-  } catch (error) {
-    console.error("inquiries: contactMessage create failed:", error);
-  }
 
   const emailResult = await sendInquiryEmail({
     to: INQUIRY_TO_EMAIL,

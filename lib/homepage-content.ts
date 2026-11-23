@@ -1,22 +1,9 @@
-import { prisma } from "./prisma";
-import { normalizeMediaUrlsInData } from "./media-store";
+import homepage from "../data/homepage.json";
 
+/**
+ * Homepage section copy. Static — read from data/homepage.json (a snapshot of
+ * what the former CMS served). Edit that file and redeploy to change content.
+ */
 export async function getHomepageSections(): Promise<Record<string, any>> {
-  try {
-    const sections = await prisma.homepageContent.findMany({
-      orderBy: { section: "asc" },
-    });
-
-    const data: Record<string, any> = {};
-    for (const section of sections) {
-      try {
-        data[section.section] = normalizeMediaUrlsInData(JSON.parse(section.data));
-      } catch {
-        data[section.section] = {};
-      }
-    }
-    return data;
-  } catch {
-    return {};
-  }
+  return homepage as Record<string, any>;
 }

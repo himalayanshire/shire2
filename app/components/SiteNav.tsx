@@ -53,24 +53,13 @@ export function SiteNav() {
   const [desktopDropdown, setDesktopDropdown] = useState(false);
   const [mobileRoomsOpen, setMobileRoomsOpen] = useState(false);
   const [hoveredLabel, setHoveredLabel] = useState<string | null>(null);
-  const [logo, setLogo] = useState("/images/logo2.jpg");
+  const logo = "/images/logo2.jpg";
 
   // Dropdown order only — Walnut appears last. CMS content is untouched.
   const navRooms = [
     ...rooms.filter((room) => room.slug !== "walnut"),
     ...rooms.filter((room) => room.slug === "walnut"),
   ];
-
-  useEffect(() => {
-    fetch("/api/public/settings")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data: { site_logo?: string } | null) => {
-        if (data?.site_logo?.trim()) setLogo(data.site_logo.trim());
-      })
-      .catch(() => {
-        // keep default logo
-      });
-  }, []);
 
   useEffect(() => {
     return scrollY.on("change", (v) => setScrolled(v > 60));

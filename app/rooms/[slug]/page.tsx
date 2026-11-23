@@ -3,9 +3,6 @@ import { getMergedRoom, type Room } from "@/lib/room-content";
 import { getPublicRoomImages } from "@/lib/room-images";
 import { notFound } from "next/navigation";
 
-// Room photos and details are admin-managed, so render fresh on every request.
-export const dynamic = "force-dynamic";
-
 import { SiteNav } from "../../components/SiteNav";
 import { RoomPageContent } from "../../components/rooms/RoomPageContent";
 import { SiteFooter } from "../../components/SiteFooter";

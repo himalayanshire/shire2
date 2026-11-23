@@ -5,7 +5,6 @@ import { getPageContent } from "@/lib/page-content";
 import { SUSTAINABILITY_PAGE_KEY, mergeSustainability } from "@/lib/sustainability-content";
 import { sustainabilityMetadata } from "../metadata";
 
-export const dynamic = "force-dynamic";
 
 export function generateMetadata() {
   return sustainabilityMetadata();
