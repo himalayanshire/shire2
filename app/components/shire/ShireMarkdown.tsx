@@ -4,16 +4,37 @@ import Link from "next/link";
 /**
  * Renders Shire's replies without ever touching innerHTML. Supported subset:
  * paragraphs, "- " bullets, "1. " lists, **bold** and [label](/internal-path)
- * links. Anything else is shown as literal text, so model output cannot inject
- * markup, scripts or external links.
+ * links, plus the official booking page link. Anything else is shown as literal
+ * text, so model output cannot inject markup, scripts or other external links.
  */
 
-const TOKEN = /(\*\*[^*]+\*\*|\[[^\]]{1,80}\]\(\/[^\s)]{0,160}\))/g;
+/**
+ * The one external link allowed: the official booking page, optionally with
+ * dates and guest counts. Matched strictly, so nothing else can be smuggled in.
+ */
+const BOOKING_LINK =
+  "https:\\/\\/letsbook\\.me\\/booking\\/thehimalayanshire(?:\\?checkin=\\d{4}-\\d{2}-\\d{2}&checkout=\\d{4}-\\d{2}-\\d{2}&adults=\\d{1,2}&children=\\d{1,2})?";
+const TOKEN = new RegExp(`(\\*\\*[^*]+\\*\\*|\\[[^\\]]{1,80}\\]\\((?:\\/[^\\s)]{0,160}|${BOOKING_LINK})\\))`, "g");
+const BOOKING_ONLY = new RegExp(`^${BOOKING_LINK}$`);
 
 function renderInline(text: string, onNavigate?: () => void): React.ReactNode[] {
   return text.split(TOKEN).map((part, index) => {
     if (part.startsWith("**") && part.endsWith("**") && part.length > 4) {
       return <strong key={index}>{part.slice(2, -2)}</strong>;
+    }
+    const external = /^\[([^\]]+)\]\((https:[^\s)]+)\)$/.exec(part);
+    if (external?.[1] && external[2] && BOOKING_ONLY.test(external[2])) {
+      return (
+        <a
+          key={index}
+          href={external[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-emerald-800 underline decoration-[#d4a62a] decoration-2 underline-offset-2 hover:text-emerald-950"
+        >
+          {external[1]}
+        </a>
+      );
     }
     const link = /^\[([^\]]+)\]\((\/[^\s)]*)\)$/.exec(part);
     if (link?.[1] && link[2]) {
