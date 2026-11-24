@@ -3,6 +3,7 @@ import { getClientIp, rateLimit } from "@/lib/shire/rate-limit";
 import { buildSystemPrompt } from "@/lib/shire/prompt";
 import { completeChat } from "@/lib/shire/provider";
 import { answerFromKnowledge } from "@/lib/shire/fallback";
+import { brand } from "@/lib/content";
 import { shireRequestSchema, type ShireResponse } from "@/lib/shire/types";
 
 export const runtime = "nodejs";
@@ -120,8 +121,12 @@ export async function POST(request: Request) {
       const payload: ShireResponse = { reply: offline };
       return NextResponse.json(payload, { headers: { "Cache-Control": "no-store" } });
     }
-    if (result.reason === "busy") return fail("busy", 503);
-    return result.reason === "timeout" ? fail("timeout", 504) : fail("upstream", 502);
+    // Never leave the visitor with an error: hand over the team's contact details.
+    console.info("[shire] ok provider=contact-fallback");
+    const payload: ShireResponse = {
+      reply: `I'm having trouble answering that right now, sorry! The team can help straight away: call or WhatsApp ${brand.phoneDisplay.join(" or ")}, or email ${brand.email}.`,
+    };
+    return NextResponse.json(payload, { headers: { "Cache-Control": "no-store" } });
   }
 
   const reply = cleanReply(result.text);

@@ -46,6 +46,10 @@ export default function ContactPageContent() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [today] = useState(() => {
+    const d = new Date();
+    return new Date(d.getTime() - d.getTimezoneOffset() * 60_000).toISOString().slice(0, 10);
+  });
 
   function closeSuccess() {
     setShowSuccess(false);
@@ -95,8 +99,8 @@ export default function ContactPageContent() {
     }
     if (!form.checkInDate) next.checkInDate = "Check-in date is required.";
     if (!form.checkOutDate) next.checkOutDate = "Check-out date is required.";
-    if (!form.adults) next.adults = "Number of adults is required.";
-    if (!form.children) next.children = "Number of children is required.";
+    if (!/^d+$/.test(form.adults.trim()) || Number(form.adults) < 1) next.adults = "Enter at least 1 adult.";
+    if (!/^d+$/.test(form.children.trim())) next.children = "Enter 0 or more children.";
     if (form.checkInDate && form.checkOutDate && form.checkOutDate <= form.checkInDate) {
       next.checkOutDate = "Check-out date must be after check-in date.";
     }
@@ -226,6 +230,8 @@ export default function ContactPageContent() {
             <form onSubmit={submit} className="space-y-4">
               <Field
                 id="name"
+                error={errors.name}
+                autoComplete="name"
                 label="Full Name"
                 value={form.name}
                 onChange={handleInput("name")}
@@ -233,6 +239,9 @@ export default function ContactPageContent() {
               />
               <Field
                 id="phone"
+                error={errors.phone}
+                autoComplete="tel"
+                inputMode="tel"
                 label="Phone Number"
                 value={form.phone}
                 onChange={handleInput("phone")}
@@ -240,6 +249,9 @@ export default function ContactPageContent() {
               />
               <Field
                 id="email"
+                error={errors.email}
+                autoComplete="email"
+                type="email"
                 label="Email Address"
                 value={form.email}
                 onChange={handleInput("email")}
@@ -247,22 +259,28 @@ export default function ContactPageContent() {
               />
               <Field
                 id="checkInDate"
+                error={errors.checkInDate}
                 label="Check-in Date"
                 type="date"
+                min={today}
                 value={form.checkInDate}
                 onChange={handleInput("checkInDate")}
                 required
               />
               <Field
                 id="checkOutDate"
+                error={errors.checkOutDate}
                 label="Check-out Date"
                 type="date"
+                min={form.checkInDate || today}
                 value={form.checkOutDate}
                 onChange={handleInput("checkOutDate")}
                 required
               />
               <Field
                 id="adults"
+                error={errors.adults}
+                inputMode="numeric"
                 label="Number of Adults"
                 value={form.adults}
                 onChange={handleInput("adults")}
@@ -270,6 +288,8 @@ export default function ContactPageContent() {
               />
               <Field
                 id="children"
+                error={errors.children}
+                inputMode="numeric"
                 label="Number of Children"
                 value={form.children}
                 onChange={handleInput("children")}
@@ -292,13 +312,6 @@ export default function ContactPageContent() {
                   We couldn’t submit your enquiry right now. Please try again or contact us directly.
                 </p>
               )}
-              {errors.name && <p className="text-red-600 text-xs">{errors.name}</p>}
-              {errors.phone && <p className="text-red-600 text-xs">{errors.phone}</p>}
-              {errors.email && <p className="text-red-600 text-xs">{errors.email}</p>}
-              {errors.checkInDate && <p className="text-red-600 text-xs">{errors.checkInDate}</p>}
-              {errors.checkOutDate && <p className="text-red-600 text-xs">{errors.checkOutDate}</p>}
-              {errors.adults && <p className="text-red-600 text-xs">{errors.adults}</p>}
-              {errors.children && <p className="text-red-600 text-xs">{errors.children}</p>}
             </form>
           </div>
         </div>
@@ -392,7 +405,7 @@ function Field({
   required?: boolean;
   autoComplete?: string;
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
-  min?: number;
+  min?: number | string;
 }) {
   return (
     <div>
@@ -409,6 +422,7 @@ function Field({
         autoComplete={autoComplete}
         inputMode={inputMode}
         min={min}
+        aria-invalid={error ? true : undefined}
       />
       {error && <p className="mt-1.5 text-xs font-medium text-red-600">{error}</p>}
     </div>

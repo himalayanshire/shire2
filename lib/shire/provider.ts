@@ -33,6 +33,7 @@ export type ProviderResult =
 const FREE_ENDPOINTS: Endpoint[] = [
   { name: "llm7", chatUrl: "https://api.llm7.io/v1/chat/completions", model: "gpt-oss:20b", maxTokens: 1500 },
   { name: "pollinations", chatUrl: "https://text.pollinations.ai/openai", model: "openai-fast", maxTokens: 1500 },
+  { name: "pollinations-2", chatUrl: "https://text.pollinations.ai/openai", model: "openai", maxTokens: 1500 },
 ];
 
 const ATTEMPT_TIMEOUT_MS = 14_000;
@@ -115,7 +116,8 @@ export async function completeChat(messages: ChatTurn[]): Promise<ProviderResult
   let sawBusy = false;
   // Free tiers rate-limit per IP in short bursts: if every endpoint is busy,
   // wait briefly and make one more pass before giving up.
-  for (let round = 0; round < 2; round++) {
+  const started = Date.now();
+  for (let round = 0; round < 3; round++) {
     sawBusy = false;
     for (const endpoint of endpoints()) {
       const result = await attempt(endpoint, messages);
@@ -123,9 +125,9 @@ export async function completeChat(messages: ChatTurn[]): Promise<ProviderResult
       console.error(`[shire] ${result.detail}`);
       if (result.reason === "busy") sawBusy = true;
       last = result;
+      if (Date.now() - started > 40_000) return sawBusy ? { ok: false, reason: "busy", detail: result.detail } : result;
     }
-    if (!sawBusy) break;
-    if (round === 0) await new Promise((r) => setTimeout(r, 2500));
+    if (round < 2) await new Promise((r) => setTimeout(r, 1500));
   }
   return sawBusy ? { ok: false, reason: "busy", detail: last.ok ? "" : last.detail } : last;
 }

@@ -1,26 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { getClientIp, rateLimit } from "@/lib/shire/rate-limit";
 
 const INQUIRY_TO_EMAIL = "himalayanshire@gmail.com";
 
 const inquirySchema = z.object({
-  name: z.string().trim().min(1, "Name is required"),
-  phone: z.string().trim().min(1, "Phone number is required"),
+  name: z.string().trim().min(1, "Name is required").max(120),
+  phone: z.string().trim().min(1, "Phone number is required").max(40),
   email: z
     .string()
     .trim()
+    .max(200)
     .optional()
     .transform((value) => value || "")
     .refine((value) => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), {
       message: "Email address is invalid",
     }),
-  checkInDate: z.string().trim().min(1, "Check-in date is required"),
-  checkOutDate: z.string().trim().min(1, "Check-out date is required"),
-  adults: z.coerce.number().int().min(1, "At least one adult is required"),
-  children: z.coerce.number().int().min(0, "Children cannot be negative"),
+  checkInDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, "Check-in date is required"),
+  checkOutDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, "Check-out date is required"),
+  adults: z.coerce.number().int().min(1, "At least one adult is required").max(50),
+  children: z.coerce.number().int().min(0, "Children cannot be negative").max(50),
+}).refine((v) => v.checkOutDate > v.checkInDate, {
+  message: "Check-out date must be after check-in date",
+  path: ["checkOutDate"],
 });
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req.headers);
+  const limit = rateLimit({ key: "inquiry", limit: 5, windowMs: 10 * 60_000, ip });
+  if (!limit.success) {
+    return NextResponse.json(
+      { error: "Too many enquiries. Please wait a few minutes or call us directly." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } },
+    );
+  }
+
   let payload: unknown;
 
   try {
@@ -97,11 +111,42 @@ async function sendInquiryEmail({
     return sendViaResend({ to, replyTo, subject, text, resendKey });
   }
 
-  return {
-    sent: false,
-    reason:
-      "Email delivery is not configured. Set SMTP_USER + SMTP_PASSWORD (or RESEND_API_KEY) to send inquiry emails.",
-  };
+  // No mail credentials configured: use FormSubmit (free, no key) so enquiries still arrive.
+  return sendViaFormSubmit({ to, replyTo, subject, text });
+}
+
+async function sendViaFormSubmit({
+  to,
+  replyTo,
+  subject,
+  text,
+}: {
+  to: string;
+  replyTo?: string;
+  subject: string;
+  text: string;
+}): Promise<{ sent: true } | { sent: false; reason: string }> {
+  try {
+    const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(to)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        _subject: subject,
+        _template: "box",
+        _captcha: "false",
+        ...(replyTo ? { email: replyTo, _replyto: replyTo } : null),
+        message: text,
+      }),
+      signal: AbortSignal.timeout(15_000),
+    });
+    const data = (await response.json().catch(() => ({}))) as { success?: string | boolean; message?: string };
+    if (!response.ok || String(data.success) !== "true") {
+      return { sent: false, reason: data.message || "Email delivery failed." };
+    }
+    return { sent: true };
+  } catch {
+    return { sent: false, reason: "Email delivery failed." };
+  }
 }
 
 async function sendViaSmtp({
