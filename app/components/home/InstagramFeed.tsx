@@ -1,18 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
+import { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import {
+  INSTAGRAM_COMPACT_COUNT,
+  INSTAGRAM_EXPANDED_COUNT,
   INSTAGRAM_POSTS,
   INSTAGRAM_PROFILE,
   instagramPostUrl,
   type InstagramPost,
 } from "@/lib/social-feeds";
-
-const ITEM_WIDTH = 240;
-const GAP = 14;
-const COMPACT_COUNT = 3;
 
 function InstagramGlyph({ size = 18 }: { size?: number }) {
   return (
@@ -43,13 +41,10 @@ function TypeBadge({ type }: { type: InstagramPost["type"] }) {
 }
 
 export function InstagramFeed() {
-  const scrollerRef = useRef<HTMLDivElement>(null);
   const [expanded, setExpanded] = useState(false);
-  const posts = expanded ? INSTAGRAM_POSTS : INSTAGRAM_POSTS.slice(0, COMPACT_COUNT);
-
-  const scrollFeed = (dir: 1 | -1) => {
-    scrollerRef.current?.scrollBy({ left: dir * (ITEM_WIDTH + GAP), behavior: "smooth" });
-  };
+  const visible = INSTAGRAM_POSTS.slice(0, INSTAGRAM_EXPANDED_COUNT);
+  const posts = expanded ? visible : visible.slice(0, INSTAGRAM_COMPACT_COUNT);
+  const canExpand = visible.length > INSTAGRAM_COMPACT_COUNT;
 
   return (
     <div className="relative">
@@ -106,29 +101,23 @@ export function InstagramFeed() {
         </a>
       </div>
 
-      {/* Posts */}
-      <div
-        ref={scrollerRef}
-        className="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        style={{ gap: GAP }}
-      >
+      {/* Posts — three across by default, six when expanded */}
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
         {posts.map((post, i) => (
           <a
             key={post.id}
-            href={instagramPostUrl(post.id)}
+            href={instagramPostUrl(post)}
             target="_blank"
             rel="noreferrer"
             aria-label={`View Instagram post ${i + 1} from @${INSTAGRAM_PROFILE.handle}`}
-            className={`group relative aspect-square w-[74vw] shrink-0 snap-start overflow-hidden rounded-xl bg-[#f5f5f7] sm:w-[240px] ${
-              i === 0 ? "ml-auto" : ""
-            } ${i === posts.length - 1 ? "mr-auto" : ""}`}
+            className="group relative aspect-square overflow-hidden rounded-lg bg-[#f5f5f7] sm:rounded-xl"
           >
             <Image
               src={post.image}
               alt={`Instagram post by @${INSTAGRAM_PROFILE.handle}`}
               fill
-              sizes="(max-width: 640px) 74vw, 240px"
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+              sizes="(max-width: 640px) 33vw, 360px"
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
             />
             <TypeBadge type={post.type} />
             <span className="absolute inset-0 flex items-center justify-center gap-1.5 bg-[rgba(158,230,171,0.9)] text-sm font-semibold text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
@@ -141,35 +130,17 @@ export function InstagramFeed() {
         ))}
       </div>
 
-      <button
-        type="button"
-        onClick={() => scrollFeed(-1)}
-        aria-label="Previous Instagram posts"
-        className={`absolute -left-3 top-1/2 z-20 h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-emerald-950/15 bg-cream-50/90 text-emerald-950 shadow-[var(--shadow-soft)] backdrop-blur transition-all duration-300 hover:scale-105 hover:bg-gold-400 ${
-          expanded ? "hidden lg:flex" : "hidden"
-        }`}
-      >
-        <ChevronLeft size={18} strokeWidth={2.2} />
-      </button>
-      <button
-        type="button"
-        onClick={() => scrollFeed(1)}
-        aria-label="Next Instagram posts"
-        className={`absolute -right-3 top-1/2 z-20 h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-emerald-950/15 bg-cream-50/90 text-emerald-950 shadow-[var(--shadow-soft)] backdrop-blur transition-all duration-300 hover:scale-105 hover:bg-gold-400 ${
-          expanded ? "hidden lg:flex" : "hidden"
-        }`}
-      >
-        <ChevronRight size={18} strokeWidth={2.2} />
-      </button>
-
-      <button
-        type="button"
-        onClick={() => setExpanded((value) => !value)}
-        className="mx-auto mt-8 flex items-center gap-2 rounded-full border border-emerald-900/20 bg-cream-50 px-7 py-3 text-xs font-bold uppercase tracking-[0.2em] text-emerald-950 shadow-[var(--shadow-soft)] transition-all duration-300 hover:border-gold-500 hover:bg-gold-400"
-      >
-        {expanded ? "Show less" : "View more"}
-        {expanded ? <ChevronUp size={14} strokeWidth={2.2} /> : <ChevronDown size={14} strokeWidth={2.2} />}
-      </button>
+      {canExpand && (
+        <button
+          type="button"
+          onClick={() => setExpanded((value) => !value)}
+          aria-expanded={expanded}
+          className="mx-auto mt-8 flex items-center gap-2 rounded-full border border-emerald-900/20 bg-cream-50 px-7 py-3 text-xs font-bold uppercase tracking-[0.2em] text-emerald-950 shadow-[var(--shadow-soft)] transition-all duration-300 hover:border-gold-500 hover:bg-gold-400"
+        >
+          {expanded ? "Show less" : "View more"}
+          {expanded ? <ChevronUp size={14} strokeWidth={2.2} /> : <ChevronDown size={14} strokeWidth={2.2} />}
+        </button>
+      )}
     </div>
   );
 }

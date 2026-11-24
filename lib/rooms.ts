@@ -61,6 +61,7 @@ export const rooms: RoomData[] = [
       "2 bay windows with seating",
     ],
     images: [
+      "/images/rooms/buransh-hero.jpg",
       "/images/rooms/buransh-1.jpg",
       "/images/rooms/buransh-2.jpg",
       "/images/rooms/buransh-3.jpg",
@@ -87,6 +88,7 @@ export const rooms: RoomData[] = [
       "Stylish washroom with shower",
     ],
     images: [
+      "/images/rooms/chir-pine-hero.jpg",
       "/images/rooms/chir-pine-4.jpg",
       "/images/rooms/chir-pine-1.jpg",
       "/images/rooms/chir-pine-2.jpg",
@@ -113,6 +115,7 @@ export const rooms: RoomData[] = [
       "Valley view from bed",
     ],
     images: [
+      "/images/rooms/bluepine-hero.jpg",
       "/images/rooms/bluepine-1.jpg",
       "/images/rooms/bluepine-2.jpg",
       "/images/rooms/bluepine-3.jpg",
@@ -142,8 +145,8 @@ export const rooms: RoomData[] = [
       "/images/rooms/mohru-1.jpg",
       "/images/rooms/mohru-2.jpg",
       "/images/rooms/mohru-3.jpg",
-      "/images/rooms/mohru-4.jpg",
-      "/images/rooms/mohru-5.jpg",
+      "/images/rooms/mohru-frames.jpg",
+      "/images/rooms/mohru-sofa.jpg",
     ],
     tourVideoId: "R-FYjmUpVqk",
   },

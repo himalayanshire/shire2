@@ -24,9 +24,17 @@ export type InstagramPost = {
   image: string;
   likes?: number;
   type: "video" | "carousel";
+  /** Instagram URL segment: reels live under /reel/, everything else under /p/. */
+  kind?: "reel" | "p";
 };
 
+/** Posts shown by default and when expanded. */
+export const INSTAGRAM_COMPACT_COUNT = 3;
+export const INSTAGRAM_EXPANDED_COUNT = 6;
+
 export const INSTAGRAM_POSTS: InstagramPost[] = [
+  { id: "DeTzphNsILo", image: "/instagram/new-reel.jpg", type: "video", kind: "reel" },
+  { id: "DeeTjIxmiFz", image: "/instagram/new-post.jpg", type: "carousel" },
   { id: "Dd346lSMBTD", image: "/instagram/post-01.jpg", likes: 25, type: "video" },
   { id: "DdrI-NImqKS", image: "/instagram/post-02.jpg", likes: 14, type: "carousel" },
   { id: "DdmAbYFMNVG", image: "/instagram/post-03.jpg", likes: 43, type: "video" },
@@ -41,7 +49,8 @@ export const INSTAGRAM_POSTS: InstagramPost[] = [
   { id: "Da5NfdCpzlZ", image: "/instagram/post-12.jpg", likes: 238, type: "video" },
 ];
 
-export const instagramPostUrl = (id: string) => `https://www.instagram.com/p/${id}`;
+export const instagramPostUrl = (post: Pick<InstagramPost, "id" | "kind">) =>
+  `https://www.instagram.com/${post.kind ?? "p"}/${post.id}`;
 
 /* -------------------------------------------------------------------------- */
 /*  GOOGLE REVIEWS                                                            */
@@ -57,11 +66,6 @@ export const GOOGLE_REVIEWS_SUMMARY = {
   mapsUrl:
     "https://www.google.com/maps?ll=31.066671,77.309332&z=13&t=m&hl=en&gl=IN&mapclient=embed&cid=4674173627328913394",
   writeReviewUrl: "https://search.google.com/local/writereview?placeid=ChIJH6VoQCqHBTkR8l9wMyYA3kA",
-  aiSummary: [
-    "Unbeatable valley and mountain views from the rooms, balcony, and common areas",
-    "Delicious food with standout dishes like uttapam, chicken curry, and homemade siddus",
-    "Friendly, attentive staff and thoughtful dog-friendly service, including extra help from Richa",
-  ],
 } as const;
 
 export type GoogleReview = {
@@ -74,14 +78,11 @@ export type GoogleReview = {
   morePhotos?: number;
 };
 
+/** Posts shown by default and when expanded (only real Google reviews that include photos). */
+export const REVIEWS_COMPACT_COUNT = 3;
+export const REVIEWS_EXPANDED_COUNT = 6;
+
 export const GOOGLE_REVIEWS: GoogleReview[] = [
-  {
-    name: "Anubhav Kumar",
-    date: "15 days ago",
-    avatar: `${GP}/a/ACg8ocJB4usB2Hwa4shUa6BYarJhHSY5wFWrT1YEjVnlDoqHqfv62Q=s64-c-rp-mo-br100`,
-    text: "Everything was perfect..very clean and great staff.. Would visit again",
-    url: `${REVIEW_BASE}Ci9DQUlRQUNvZENodHljRjlvT2xSNVZsOHphV3B1VjAwM1p6UkdURlZzTVhsTk0xRRAB${REVIEW_TAIL}CAIQACodChtycF9oOlR5Vl8zaWpuV003ZzRGTFVsMXlNM1E%7C%7C`,
-  },
   {
     name: "Anindita Baruah",
     date: "16 days ago",

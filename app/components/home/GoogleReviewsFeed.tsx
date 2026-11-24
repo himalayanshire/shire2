@@ -1,12 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { GOOGLE_REVIEWS, GOOGLE_REVIEWS_SUMMARY as SUMMARY, type GoogleReview } from "@/lib/social-feeds";
+import { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import {
+  GOOGLE_REVIEWS,
+  GOOGLE_REVIEWS_SUMMARY as SUMMARY,
+  REVIEWS_COMPACT_COUNT,
+  REVIEWS_EXPANDED_COUNT,
+  type GoogleReview,
+} from "@/lib/social-feeds";
 
 const BLUE = "#006dff";
 const CARD_BG = "#f6f6f8";
-const GAP = 20;
 
 function Stars({ size = 18 }: { size?: number }) {
   return (
@@ -57,39 +62,6 @@ function VerifiedBadge() {
       <circle cx="12" cy="12" r="11" fill={BLUE} />
       <path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
-  );
-}
-
-function SummaryCard() {
-  return (
-    <div className="flex h-full flex-col rounded-3xl p-5" style={{ backgroundColor: CARD_BG }}>
-      <div className="flex items-center gap-3">
-        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#8D38FF] to-[#006dff] text-white">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-            <path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2zM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15z" />
-          </svg>
-        </span>
-        <div className="leading-tight">
-          <p className="bg-gradient-to-r from-[#8D38FF] to-[#006dff] bg-clip-text text-sm font-semibold text-transparent">
-            AI-Generated Summary
-          </p>
-          <p className="text-xs text-[#111]/60">Based on {SUMMARY.count} Google reviews</p>
-        </div>
-      </div>
-      <div className="mt-4">
-        <Stars />
-      </div>
-      <ul className="mt-4 space-y-3 text-[15px] leading-snug text-[#111]">
-        {SUMMARY.aiSummary.map((line) => (
-          <li key={line} className="flex gap-2.5">
-            <svg className="mt-1 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M4 12.5l5 5L20 6.5" />
-            </svg>
-            <span>{line}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }
 
@@ -171,33 +143,10 @@ function ReviewCard({ review }: { review: GoogleReview }) {
 }
 
 export function GoogleReviewsFeed() {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const [canPrev, setCanPrev] = useState(false);
-  const [canNext, setCanNext] = useState(false);
-
-  const update = useCallback(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    setCanPrev(el.scrollLeft > 4);
-    setCanNext(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
-  }, []);
-
-  useEffect(() => {
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, [update]);
-
-  const scrollByCard = (dir: 1 | -1) => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const first = el.firstElementChild as HTMLElement | null;
-    const step = (first?.offsetWidth ?? el.clientWidth) + GAP;
-    el.scrollBy({ left: dir * step, behavior: "smooth" });
-  };
-
-  const arrow =
-    "absolute top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-[rgba(17,17,17,0.5)] text-white transition-colors hover:bg-[#111]";
+  const [expanded, setExpanded] = useState(false);
+  const visible = GOOGLE_REVIEWS.filter((r) => (r.photos?.length ?? 0) > 0).slice(0, REVIEWS_EXPANDED_COUNT);
+  const reviews = expanded ? visible : visible.slice(0, REVIEWS_COMPACT_COUNT);
+  const canExpand = visible.length > REVIEWS_COMPACT_COUNT;
 
   return (
     <div className="text-[#111]">
@@ -230,37 +179,24 @@ export function GoogleReviewsFeed() {
         </a>
       </div>
 
-      {/* Carousel */}
-      <div className="relative">
-        <div
-          ref={scrollerRef}
-          onScroll={update}
-          className="flex snap-x snap-mandatory items-stretch overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          style={{ gap: GAP }}
-        >
-          {[<SummaryCard key="summary" />, ...GOOGLE_REVIEWS.map((r) => <ReviewCard key={r.url} review={r} />)].map(
-            (card, i) => (
-              <div
-                key={i}
-                className="w-full shrink-0 snap-start md:w-[calc((100%-20px)/2)] lg:w-[calc((100%-40px)/3)]"
-              >
-                {card}
-              </div>
-            )
-          )}
-        </div>
-
-        {canPrev && (
-          <button type="button" onClick={() => scrollByCard(-1)} aria-label="Previous reviews" className={`${arrow} -left-2 sm:-left-3`}>
-            <ChevronLeft size={18} />
-          </button>
-        )}
-        {canNext && (
-          <button type="button" onClick={() => scrollByCard(1)} aria-label="Next reviews" className={`${arrow} -right-2 sm:-right-3`}>
-            <ChevronRight size={18} />
-          </button>
-        )}
+      {/* Reviews — three across by default, six when expanded */}
+      <div className="grid items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {reviews.map((review) => (
+          <ReviewCard key={review.url} review={review} />
+        ))}
       </div>
+
+      {canExpand && (
+        <button
+          type="button"
+          onClick={() => setExpanded((value) => !value)}
+          aria-expanded={expanded}
+          className="mx-auto mt-8 flex items-center gap-2 rounded-full border border-emerald-900/20 bg-cream-50 px-7 py-3 text-xs font-bold uppercase tracking-[0.2em] text-emerald-950 shadow-[var(--shadow-soft)] transition-all duration-300 hover:border-gold-500 hover:bg-gold-400"
+        >
+          {expanded ? "Show less" : "View more"}
+          {expanded ? <ChevronUp size={14} strokeWidth={2.2} /> : <ChevronDown size={14} strokeWidth={2.2} />}
+        </button>
+      )}
     </div>
   );
 }
