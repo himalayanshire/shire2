@@ -145,7 +145,7 @@ export function HomeEditorial({
       : fallback;
 
   return (
-    <div className="relative overflow-hidden bg-[#f7f1e6] text-emerald-950">
+    <div className="bg-lit-paper relative overflow-hidden text-emerald-950">
       <section
         ref={storyRef}
         id="story"
@@ -161,7 +161,7 @@ export function HomeEditorial({
             <motion.span variants={fadeUp} className="luxe-kicker text-gold-700">
               {t("editorial", "kicker", "Our Story")}
             </motion.span>
-            <motion.h2 variants={fadeUp} className="mt-5 max-w-4xl whitespace-pre-line font-display text-4xl font-semibold leading-[1.05] text-emerald-950 sm:text-5xl lg:text-6xl">
+            <motion.h2 variants={fadeUp} className="mt-5 max-w-4xl whitespace-pre-line font-display text-5xl font-semibold leading-[1.02] text-emerald-950 sm:text-6xl lg:text-7xl">
               {t("editorial", "heading", brandIntro.heading)}
             </motion.h2>
             <motion.div variants={fadeUp} className="mt-8 max-w-[68ch] space-y-5 text-base leading-[1.9] text-emerald-950/68 sm:text-lg">
@@ -184,17 +184,20 @@ export function HomeEditorial({
             style={{ y: imageY }}
             className="relative"
           >
-            <div className="relative ml-auto aspect-[4/5] max-w-[620px] overflow-hidden rounded-[1.5rem]">
-              <Image
-                src={t("editorial", "image", "/images/brand-lifestyle.jpg")}
-                alt="The Himalayan Shire homestay covered in winter snow at Fagu, near Shimla"
-                fill
-                sizes="(max-width: 1024px) 100vw, 48vw"
-                className="object-cover"
-              />
+            <div className="img-frame relative ml-auto aspect-[4/5] max-w-[620px] rounded-[1.5rem]">
+              <div className="img-reveal absolute inset-0 overflow-hidden rounded-[1.5rem] shadow-[0_40px_90px_-30px_rgba(3,45,32,0.55)]">
+                <Image
+                  src={t("editorial", "image", "/images/brand-lifestyle.jpg")}
+                  alt="The Himalayan Shire homestay covered in winter snow at Fagu, near Shimla"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 48vw"
+                  className="object-cover"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-emerald-950/25 via-transparent to-transparent" />
+              </div>
             </div>
-            <div className="absolute -bottom-7 left-0 max-w-[18rem] border border-emerald-900/10 bg-[#fffaf0]/92 p-5 shadow-[0_22px_70px_rgba(3,45,32,0.16)] backdrop-blur">
-              <p className="text-sm leading-[1.7] text-emerald-950/70">
+            <div className="glass-panel float-slow absolute -bottom-7 left-0 max-w-[18rem] rounded-sm border-l-[3px] border-l-gold-500 p-5">
+              <p className="text-sm leading-[1.7] text-emerald-950/75">
                 {t("editorial", "shortPitch", brand.shortPitch)}
               </p>
             </div>
@@ -215,7 +218,7 @@ export function HomeEditorial({
               <motion.span variants={fadeUp} className="luxe-kicker text-gold-700">
                 {t("rooms", "kicker", "Accommodations")}
               </motion.span>
-              <motion.h2 variants={fadeUp} className="mt-5 max-w-3xl font-display text-4xl font-semibold leading-[1.05] text-emerald-950 sm:text-5xl lg:text-6xl">
+              <motion.h2 variants={fadeUp} className="mt-5 max-w-3xl font-display text-5xl font-semibold leading-[1.02] text-emerald-950 sm:text-6xl lg:text-7xl">
                 {t("rooms", "heading", "Rooms, named after the trees around our property")}
               </motion.h2>
             </div>
@@ -242,7 +245,7 @@ export function HomeEditorial({
             <motion.span variants={fadeUp} className="luxe-kicker text-gold-700">
               Instagram
             </motion.span>
-            <motion.h2 variants={fadeUp} className="mt-5 font-display text-4xl font-semibold leading-[1.05] text-emerald-950 sm:text-5xl lg:text-6xl">
+            <motion.h2 variants={fadeUp} className="mt-5 font-display text-5xl font-semibold leading-[1.02] text-emerald-950 sm:text-6xl lg:text-7xl">
               Moments from the shire.
             </motion.h2>
             <motion.p variants={fadeUp} className="mx-auto mt-6 max-w-2xl text-base leading-[1.9] text-emerald-950/65 sm:text-lg">
@@ -270,7 +273,7 @@ export function HomeEditorial({
         </div>
       </section>
 
-      <section id="amenities" className="bg-[#fffaf0] px-5 py-20 sm:px-8 sm:py-28 lg:px-14 lg:py-36">
+      <section id="amenities" className="bg-lit-cream px-5 py-20 sm:px-8 sm:py-28 lg:px-14 lg:py-36">
         <div className="mx-auto max-w-[1400px]">
           <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
             <motion.div
@@ -281,7 +284,7 @@ export function HomeEditorial({
               className="lg:sticky lg:top-28"
             >
               <span className="luxe-kicker text-gold-700">{t("amenities", "kicker", "Amenities")}</span>
-              <h2 className="mt-5 max-w-xl font-display text-4xl font-semibold leading-[1.05] text-emerald-950 sm:text-5xl lg:text-6xl">
+              <h2 className="mt-5 max-w-xl font-display text-5xl font-semibold leading-[1.02] text-emerald-950 sm:text-6xl lg:text-7xl">
                 {t("amenities", "heading", "Comforts arranged as part of the stay.")}
               </h2>
               <p className="mt-7 max-w-[54ch] text-base leading-[1.9] text-emerald-950/65 sm:text-lg">
@@ -298,8 +301,8 @@ export function HomeEditorial({
             >
               {AMENITY_ITEMS.map((item) => {
                 const content = (
-                  <div className="group flex items-center gap-4 border-b border-emerald-900/10 py-5 transition-colors duration-300">
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-gold-600/30 bg-white/80 text-gold-700 transition-colors duration-300 group-hover:border-gold-600/60 group-hover:text-gold-700">
+                  <div className="group flex items-center gap-4 border-b border-emerald-900/10 py-5 transition-all duration-500 hover:translate-x-1.5 hover:border-gold-500/50">
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-gold-600/35 bg-gradient-to-b from-white to-gold-50 text-gold-700 shadow-[0_6px_16px_-8px_rgba(184,134,11,0.6)] transition-all duration-500 group-hover:-translate-y-0.5 group-hover:border-gold-500 group-hover:bg-gold-500 group-hover:text-emerald-950 group-hover:shadow-[0_12px_24px_-8px_rgba(184,134,11,0.8)]">
                       <item.icon size={19} strokeWidth={1.6} />
                     </span>
                     <span className="min-w-0">
@@ -331,8 +334,8 @@ export function HomeEditorial({
         </div>
       </section>
 
-      <section className="grid bg-[#1E3E2B] lg:grid-cols-2">
-        <div className="relative h-[430px] overflow-hidden lg:h-[720px]">
+      <section className="bg-lit-forest grid lg:grid-cols-2">
+        <div className="img-reveal relative h-[430px] overflow-hidden lg:h-[720px]">
           <Image
             src={t("setting", "image", "/images/setting-view.jpg")}
             alt="Mountain view from The Himalayan Shire"
@@ -340,6 +343,8 @@ export function HomeEditorial({
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="object-cover"
           />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-emerald-950/45 via-transparent to-emerald-950/10 lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-emerald-950/70" />
+          <div className="pointer-events-none absolute inset-4 border border-gold-300/30 sm:inset-6" />
         </div>
         <div className="flex items-center px-5 py-20 sm:px-8 sm:py-28 lg:px-16">
           <motion.div
@@ -352,7 +357,7 @@ whileInView="show"
             <motion.span variants={fadeUp} className="luxe-kicker text-gold-400">
               {t("setting", "kicker", "The Setting")}
             </motion.span>
-            <motion.h2 variants={fadeUp} className="mt-5 font-display text-4xl font-semibold leading-[1.08] text-white sm:text-5xl">
+            <motion.h2 variants={fadeUp} className="mt-5 font-display text-5xl font-semibold leading-[1.05] text-white sm:text-6xl">
               {t("setting", "heading", "A serene, beautiful countryside surrounded by apple orchards.")}
             </motion.h2>
             <motion.p variants={fadeUp} className="mt-7 text-base leading-[1.9] text-white sm:text-lg">
@@ -367,7 +372,7 @@ whileInView="show"
         </div>
       </section>
 
-      <section className="bg-[#fffaf0] px-5 py-20 sm:px-8 sm:py-28 lg:px-14 lg:py-36">
+      <section className="bg-lit-cream px-5 py-20 sm:px-8 sm:py-28 lg:px-14 lg:py-36">
         <div className="mx-auto max-w-[1400px]">
           <motion.div
             variants={stagger}
@@ -379,7 +384,7 @@ whileInView="show"
             <motion.span variants={fadeUp} className="luxe-kicker text-gold-700">
               {t("video", "kicker", "The Shire on Film")}
             </motion.span>
-            <motion.h2 variants={fadeUp} className="mt-5 font-display text-4xl font-semibold leading-[1.06] text-emerald-950 sm:text-5xl">
+            <motion.h2 variants={fadeUp} className="mt-5 font-display text-5xl font-semibold leading-[1.02] text-emerald-950 sm:text-6xl">
               {t("video", "heading", "Watch the property film.")}
             </motion.h2>
             <motion.p variants={fadeUp} className="mx-auto mt-6 max-w-2xl text-base leading-[1.85] text-emerald-950/65 sm:text-lg">
@@ -393,7 +398,7 @@ whileInView="show"
             transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
             className="mx-auto mt-12 w-full max-w-5xl lg:mt-16"
           >
-            <div className="relative aspect-video w-full overflow-hidden border border-emerald-900/10 bg-emerald-950 shadow-[0_24px_70px_rgba(3,45,32,0.16)]">
+            <div className="relative aspect-video w-full overflow-hidden rounded-sm border border-gold-500/40 bg-emerald-950 shadow-[0_40px_100px_-30px_rgba(3,45,32,0.55)] ring-8 ring-white/60">
               <LazyYouTube
                 videoId={t("video", "videoUrl", "uVUTB5HsBXU")}
                 title="The Himalayan Shire property video"
@@ -409,7 +414,7 @@ whileInView="show"
           <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
             <div>
               <span className="luxe-kicker text-gold-700">{t("gallery", "kicker", "Gallery")}</span>
-              <h2 className="mt-5 max-w-2xl font-display text-4xl font-semibold leading-[1.06] text-emerald-950 sm:text-5xl">
+              <h2 className="mt-5 max-w-2xl font-display text-5xl font-semibold leading-[1.02] text-emerald-950 sm:text-6xl">
                 {t("gallery", "heading", "A visual walk through the property.")}
               </h2>
             </div>
@@ -459,13 +464,20 @@ whileInView="show"
         </div>
       </section>
 
-      <section id="book" className="relative bg-emerald-950 px-5 py-20 text-center text-cream-50 sm:px-8 sm:py-28 lg:px-14 lg:py-36">
-        <div className="mx-auto max-w-4xl">
-          <Mountain className="mx-auto text-gold-400" size={26} strokeWidth={1.4} />
-          <h2 className="mt-7 font-display text-4xl font-semibold leading-[1.08] text-cream-50 sm:text-5xl lg:text-6xl">
+      <section id="book" className="bg-lit-forest relative overflow-hidden px-5 py-24 text-center text-cream-50 sm:px-8 sm:py-32 lg:px-14 lg:py-44">
+        <svg aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-40 w-full text-emerald-900/50 sm:h-56" viewBox="0 0 1440 220" preserveAspectRatio="none" fill="currentColor">
+          <path d="M0 220V150l120-50 110 60 150-110 140 90 120-70 160 100 130-80 140 90 150-120 120 70V220z" />
+        </svg>
+        <svg aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-28 w-full text-emerald-950/80 sm:h-40" viewBox="0 0 1440 160" preserveAspectRatio="none" fill="currentColor">
+          <path d="M0 160V110l90-30 100 50 130-70 120 60 110-50 140 70 120-60 150 70 130-50 150 60V160z" />
+        </svg>
+        <div className="pointer-events-none absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-gold-400/60 to-transparent" />
+        <div className="relative mx-auto max-w-4xl">
+          <Mountain className="float-slow mx-auto text-gold-400" size={30} strokeWidth={1.2} />
+          <h2 className="mt-8 font-display text-5xl font-semibold leading-[1.05] text-cream-50 sm:text-6xl lg:text-7xl">
             {t("bookCta", "heading", "A quiet room, a warm meal, and a view worth the journey.")}
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-[1.85] text-cream-100/62 sm:text-lg">
+          <p className="mx-auto mt-7 max-w-2xl text-base leading-[1.85] text-cream-100/75 sm:text-lg">
             {t("bookCta", "description", "Tell us when you are coming and how many of you there are. We will reply with availability and a simple plan for your stay.")}
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -491,7 +503,7 @@ whileInView="show"
             <motion.span variants={fadeUp} className="luxe-kicker text-gold-700">
               Guest Reviews
             </motion.span>
-            <motion.h2 variants={fadeUp} className="mt-5 font-display text-4xl font-semibold leading-[1.05] text-emerald-950 sm:text-5xl lg:text-6xl">
+            <motion.h2 variants={fadeUp} className="mt-5 font-display text-5xl font-semibold leading-[1.02] text-emerald-950 sm:text-6xl lg:text-7xl">
               What our guests remember most.
             </motion.h2>
             <motion.p variants={fadeUp} className="mx-auto mt-6 max-w-2xl text-base leading-[1.9] text-emerald-950/65 sm:text-lg">

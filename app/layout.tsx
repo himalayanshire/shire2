@@ -8,6 +8,7 @@ import {
 import { BookClickTracker } from "./components/BookClickTracker";
 import { ImageErrorFallback } from "./components/ImageErrorFallback";
 import { FloatingActions } from "./components/FloatingActions";
+import { PremiumEffects } from "./components/PremiumEffects";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -145,6 +146,7 @@ export default function RootLayout({
         <ImageErrorFallback />
         {children}
         <FloatingActions />
+        <PremiumEffects />
       </body>
     </html>
   );

@@ -75,10 +75,10 @@ export function SiteNav() {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`sticky top-0 z-50 transition-all duration-500 bg-white ${
+      className={`sticky top-0 z-50 transition-all duration-500 backdrop-blur-xl backdrop-saturate-150 ${
         scrolled
-          ? "border-b border-emerald-200/40 shadow-sm h-16 sm:h-20"
-          : "border-b border-transparent h-20 sm:h-24"
+          ? "h-16 border-b border-gold-500/30 bg-[#fffdf7]/80 shadow-[0_12px_40px_-18px_rgba(8,40,8,0.35)] sm:h-20"
+          : "h-20 border-b border-gold-500/15 bg-[#fffdf7]/95 sm:h-24"
       }`}
     >
       <div className="mx-auto w-full max-w-[1400px] flex items-center justify-between h-full px-5 sm:px-8 lg:px-14">
@@ -98,7 +98,7 @@ export function SiteNav() {
             priority
           />
           <div className="flex flex-col flex-1 ml-3 pr-2 xl:pr-0 leading-tight">
-            <span className="font-display font-extrabold text-emerald-900 text-sm sm:text-lg tracking-wide">
+            <span className="font-display font-bold text-emerald-900 text-[13px] leading-tight sm:text-2xl tracking-wide">
               The Himalayan Shire
             </span>
             <span className="font-bold text-emerald-800 text-[11px] sm:text-sm tracking-wider whitespace-nowrap">
@@ -136,7 +136,7 @@ export function SiteNav() {
                       <motion.span
                         layoutId="nav-pill"
                         transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                        className="absolute inset-0 -z-10 rounded-full bg-emerald-100"
+                        className="absolute inset-0 -z-10 rounded-full bg-gradient-to-b from-gold-100/80 to-gold-200/50 ring-1 ring-gold-400/30"
                       />
                     )}
                     {item.label}
@@ -158,7 +158,7 @@ export function SiteNav() {
                         transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
                         className="absolute top-full right-0 pt-3 w-64"
                       >
-                        <div className="bg-white border border-emerald-200/50 rounded-xl shadow-lg overflow-hidden py-2">
+                        <div className="overflow-hidden rounded-xl border border-gold-500/25 bg-[#fffdf7]/95 py-2 shadow-[0_28px_60px_-20px_rgba(8,40,8,0.4)] backdrop-blur-xl">
                           {navRooms.map((room) => (
                             <Link
                               key={room.id}
@@ -197,7 +197,7 @@ export function SiteNav() {
                         <motion.span
                           layoutId="nav-pill"
                           transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                          className="absolute inset-0 -z-10 -mx-3 -my-2 rounded-full bg-emerald-100"
+                          className="absolute inset-0 -z-10 -mx-3 -my-2 rounded-full bg-gradient-to-b from-gold-100/80 to-gold-200/50 ring-1 ring-gold-400/30"
                         />
                       )}
                       {item.label}
@@ -218,7 +218,7 @@ export function SiteNav() {
           <motion.a
             href="https://letsbook.me/booking/thehimalayanshire?checkin=2026-08-04&checkout=2026-08-05&adults=2&children=0"
             variants={itemVariants}
-            className="inline-flex items-center gap-2 rounded-full bg-emerald-800 px-6 py-2.5 text-sm sm:text-base font-bold text-cream-50 transition-all duration-300 hover:bg-emerald-700 hover:-translate-y-0.5 shadow-md whitespace-nowrap"
+            className="luxe-button !gap-2 !px-7 !py-3 !text-[0.8rem] whitespace-nowrap"
           >
             Book Now
             <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden>
@@ -230,7 +230,7 @@ export function SiteNav() {
         <div className="flex items-center gap-3 xl:hidden">
           <a
             href="https://letsbook.me/booking/thehimalayanshire?checkin=2026-08-04&checkout=2026-08-05&adults=2&children=0"
-            className="inline-flex items-center gap-2 rounded-full bg-emerald-800 px-4 py-2 text-sm font-bold text-cream-50 transition-all duration-300 hover:bg-emerald-700 shadow-md whitespace-nowrap"
+            className="luxe-button !px-5 !py-2.5 !text-[0.75rem] whitespace-nowrap"
           >
             Book
           </a>
@@ -239,7 +239,7 @@ export function SiteNav() {
             aria-label="Open menu"
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((s) => !s)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border-2 border-emerald-200 text-emerald-800 transition-all hover:bg-emerald-100"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border-2 border-emerald-200 text-emerald-800 transition-all hover:border-gold-400 hover:bg-gold-100/60"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
               {mobileOpen ? (
@@ -259,7 +259,7 @@ export function SiteNav() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="xl:hidden border-t border-emerald-200/40 bg-white overflow-hidden"
+            className="xl:hidden overflow-hidden border-t border-gold-500/20 bg-[#fffdf7]/95 backdrop-blur-xl"
           >
             <nav aria-label="Mobile" className="mx-auto w-full max-w-[1400px] py-4 px-5 sm:px-8 flex flex-col gap-1">
               {NAV_ITEMS.map((item) => {
@@ -321,7 +321,7 @@ export function SiteNav() {
                       href={item.href}
                       onClick={() => setMobileOpen(false)}
                       className={`flex items-center justify-between px-3 py-3 rounded-lg text-sm font-bold transition-colors ${
-                        active ? "bg-emerald-100 text-emerald-900" : "text-emerald-900 hover:bg-emerald-100"
+                        active ? "bg-emerald-100 text-emerald-900" : "text-emerald-900 hover:bg-gold-100/60"
                       }`}
                     >
                       {item.label}

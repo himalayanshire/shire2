@@ -50,10 +50,11 @@ const FOOTER_COLUMNS: FooterColumn[] = [
 
 export function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden border-t border-emerald-900/15 bg-emerald-950 pb-10 pt-20 text-cream-200 sm:pb-12 sm:pt-28">
+    <footer className="bg-lit-forest relative overflow-hidden border-t-2 border-gold-500/50 pb-10 pt-20 text-cream-200 sm:pb-12 sm:pt-28">
+      <div aria-hidden className="pointer-events-none absolute left-1/2 top-0 h-px w-1/2 -translate-x-1/2 bg-gradient-to-r from-transparent via-gold-300 to-transparent" />
       <span
         aria-hidden
-        className="pointer-events-none absolute -bottom-6 left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-display text-[16vw] font-semibold leading-none text-cream-50/[0.035] sm:-bottom-10 sm:text-[11rem]"
+        className="pointer-events-none absolute -bottom-6 left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-display text-[16vw] font-semibold leading-none text-cream-50/[0.05] sm:-bottom-10 sm:text-[11rem]"
       >
         {brand.name}
       </span>
@@ -80,7 +81,7 @@ export function SiteFooter() {
           <span className="font-display text-[7vw] font-semibold leading-[1.05] text-cream-50 transition-opacity group-hover:opacity-70 sm:text-3xl md:text-4xl lg:text-5xl">
             Fagu, Shimla, Himachal Pradesh
           </span>
-          <span className="mt-1 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.2em] text-cream-200/40 transition-colors group-hover:text-gold-400 sm:ml-2 sm:mt-0 sm:text-sm">
+          <span className="mt-1 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.2em] text-cream-200/60 transition-colors group-hover:text-gold-400 sm:ml-2 sm:mt-0 sm:text-sm">
             View on map
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1">
               <path d="M3 11L11 3M11 3H4M11 3V10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -94,7 +95,7 @@ export function SiteFooter() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="flex flex-col gap-5 lg:col-span-5"
+            className="flex flex-col gap-5 lg:col-span-3"
           >
             <div className="flex items-center gap-3">
               <Image
@@ -120,7 +121,7 @@ export function SiteFooter() {
               transition={{ duration: 0.7, delay: 0.05 * (idx + 1) }}
               className="flex flex-col gap-4 lg:col-span-2"
             >
-              <h3 className="text-[10px] font-bold uppercase tracking-[0.22em] text-cream-200/40">
+              <h3 className="font-sans text-[11px] font-bold uppercase tracking-[0.3em] text-gold-400">
                 {col.title}
               </h3>
               <ul className="flex flex-col gap-2.5">
@@ -155,7 +156,7 @@ export function SiteFooter() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="flex flex-col gap-4 lg:col-span-3"
           >
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.22em] text-cream-200/40">
+            <h3 className="font-sans text-[11px] font-bold uppercase tracking-[0.3em] text-gold-400">
               Reservations
             </h3>
             <p className="text-sm font-medium leading-relaxed text-cream-200/60">
@@ -167,7 +168,7 @@ export function SiteFooter() {
           </motion.div>
         </div>
 
-        <div className="flex flex-col items-start justify-between gap-4 border-t border-emerald-800/60 pt-8 text-xs font-medium text-cream-200/40 sm:flex-row sm:items-center">
+        <div className="flex flex-col items-start justify-between gap-4 border-t border-emerald-800/60 pt-8 text-xs font-medium text-cream-200/60 sm:flex-row sm:items-center">
           <p>Copyright 2026 The Himalayan Shire. All rights reserved.</p>
           <div className="flex items-center gap-5">
             {brand.socials.map((social) => (
@@ -176,23 +177,12 @@ export function SiteFooter() {
                 {social.label}
               </a>
             ))}
-            <Link
-              href="/admin/login"
-              aria-label="Admin login"
-              title="Admin login"
-              className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-cream-200/30 text-cream-100 transition-colors hover:border-gold-400 hover:text-gold-400"
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <rect x="4" y="11" width="16" height="9" rx="2" />
-                <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-              </svg>
-            </Link>
           </div>
           <button
             type="button"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             aria-label="Back to top"
-            className="hidden items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-cream-200/40 transition-colors hover:text-gold-400 sm:inline-flex"
+            className="hidden items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-cream-200/60 transition-colors hover:text-gold-400 sm:inline-flex"
           >
             Back to top
             <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden>

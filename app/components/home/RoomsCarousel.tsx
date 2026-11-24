@@ -59,7 +59,7 @@ export function RoomsCarousel({ rooms: provided }: { rooms?: (typeof defaultRoom
             return (
             <div
               key={room.id}
-              className="group relative block w-[84%] shrink-0 snap-start overflow-hidden bg-cream-50 shadow-[0_18px_50px_-18px_rgba(6,40,25,0.35)] transition-shadow duration-500 hover:shadow-[0_32px_70px_-20px_rgba(6,40,25,0.45)] sm:w-[46%] lg:w-[31.4%]"
+              className="group relative block w-[84%] shrink-0 snap-start overflow-hidden rounded-[3px] border border-gold-500/0 bg-cream-50 shadow-[0_18px_50px_-18px_rgba(6,40,25,0.35)] transition-all duration-700 hover:-translate-y-2 hover:border-gold-500/50 hover:shadow-[0_44px_80px_-24px_rgba(6,40,25,0.5)] sm:w-[46%] lg:w-[31.4%]"
             >
               <Link
                 href={`/rooms/${room.slug}`}
@@ -71,7 +71,7 @@ export function RoomsCarousel({ rooms: provided }: { rooms?: (typeof defaultRoom
                   alt={room.name}
                   fill
                   sizes="(max-width: 640px) 84vw, (max-width: 1024px) 46vw, 31.4vw"
-                  className="object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-105"
+                  className="object-cover transition-transform duration-[1.6s] ease-out group-hover:scale-110"
                 />
                 {shimmer ? (
                   <motion.span
@@ -91,16 +91,17 @@ export function RoomsCarousel({ rooms: provided }: { rooms?: (typeof defaultRoom
                     />
                   </motion.span>
                 ) : null}
-                <span className="absolute left-4 top-4 bg-emerald-950/75 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-cream-100 backdrop-blur">
+                <span className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-emerald-950/55 to-transparent opacity-70 transition-opacity duration-700 group-hover:opacity-100" />
+                <span className="absolute left-4 top-4 border border-gold-300/40 bg-emerald-950/60 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.24em] text-gold-200 backdrop-blur-md">
                   {room.category}
                 </span>
               </Link>
 
               <div className="px-5 pb-6 pt-5 text-center">
-                <span className="mx-auto mb-3 block h-px w-10 bg-gold-600/60" />
+                <span className="mx-auto mb-3 block h-px w-10 bg-gold-600/60 transition-all duration-700 group-hover:w-20 group-hover:bg-gold-500" />
                 <Link
                   href={`/rooms/${room.slug}`}
-                  className="block font-display text-2xl font-semibold leading-snug text-emerald-950 transition-colors duration-300 group-hover:text-gold-700 sm:text-3xl"
+                  className="block font-display text-2xl font-semibold leading-snug text-emerald-950 transition-colors duration-300 group-hover:text-gold-700 sm:text-4xl"
                 >
                   {room.name}
                 </Link>
@@ -118,7 +119,7 @@ export function RoomsCarousel({ rooms: provided }: { rooms?: (typeof defaultRoom
           type="button"
           onClick={() => scrollByCard(-1)}
           aria-label="Previous rooms"
-          className="absolute left-4 top-1/2 z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-emerald-950/15 bg-cream-50/90 text-emerald-950 shadow-[var(--shadow-soft)] backdrop-blur transition-all duration-300 hover:scale-105 hover:bg-gold-400 lg:flex"
+          className="absolute left-4 top-1/2 z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-gold-500/40 bg-cream-50/90 text-emerald-950 shadow-[var(--shadow-soft)] backdrop-blur transition-all duration-300 hover:scale-110 hover:bg-gold-400 lg:flex"
         >
           <ChevronLeft size={20} strokeWidth={2.2} />
         </button>
@@ -126,7 +127,7 @@ export function RoomsCarousel({ rooms: provided }: { rooms?: (typeof defaultRoom
           type="button"
           onClick={() => scrollByCard(1)}
           aria-label="Next rooms"
-          className="absolute right-4 top-1/2 z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-emerald-950/15 bg-cream-50/90 text-emerald-950 shadow-[var(--shadow-soft)] backdrop-blur transition-all duration-300 hover:scale-105 hover:bg-gold-400 lg:flex"
+          className="absolute right-4 top-1/2 z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-gold-500/40 bg-cream-50/90 text-emerald-950 shadow-[var(--shadow-soft)] backdrop-blur transition-all duration-300 hover:scale-110 hover:bg-gold-400 lg:flex"
         >
           <ChevronRight size={20} strokeWidth={2.2} />
         </button>
@@ -142,7 +143,7 @@ export function RoomsCarousel({ rooms: provided }: { rooms?: (typeof defaultRoom
             aria-label={`Go to ${room.name}`}
             animate={{ width: index === active ? 28 : 8, opacity: index === active ? 1 : 0.35 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="h-2 rounded-full bg-emerald-950"
+            className="h-2 rounded-full bg-gradient-to-r from-gold-500 to-gold-700"
           />
         ))}
       </div>

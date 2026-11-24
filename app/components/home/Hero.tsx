@@ -132,6 +132,33 @@ export function Hero({ content }: { content?: any }) {
         aria-hidden
       />
 
+      {/* Fine gold inset frame — desktop only, frames the film like a lens */}
+      <motion.div
+        initial={{ opacity: 0, scale: 1.02 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.6, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="pointer-events-none absolute inset-5 z-[6] hidden border border-gold-300/30 lg:block xl:inset-7"
+        aria-hidden
+      >
+        <span className="absolute -left-px -top-px h-5 w-5 border-l-2 border-t-2 border-gold-300/80" />
+        <span className="absolute -right-px -top-px h-5 w-5 border-r-2 border-t-2 border-gold-300/80" />
+        <span className="absolute -left-px -bottom-px h-5 w-5 border-b-2 border-l-2 border-gold-300/80" />
+        <span className="absolute -bottom-px -right-px h-5 w-5 border-b-2 border-r-2 border-gold-300/80" />
+      </motion.div>
+
+      {/* Scroll cue — a small mouse glyph, no text */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.6, duration: 1 }}
+        className="pointer-events-none absolute bottom-24 left-1/2 z-[7] hidden -translate-x-1/2 sm:bottom-28 md:block lg:bottom-32"
+        aria-hidden
+      >
+        <span className="flex h-11 w-7 justify-center rounded-full border border-gold-200/70 pt-2 backdrop-blur-sm">
+          <span className="scroll-cue-dot h-2 w-[3px] rounded-full bg-gold-200" />
+        </span>
+      </motion.div>
+
       {/* Bottom gradient to lift meta strip — sits above the frame margin */}
       <div
         className="absolute inset-x-0 bottom-0 z-[5] h-40 max-sm:h-20 pointer-events-none sm:h-48 lg:h-56"
@@ -146,7 +173,7 @@ export function Hero({ content }: { content?: any }) {
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute inset-x-0 bottom-0 z-10 border-t border-white/10 bg-ink-900/40 backdrop-blur-md"
+        className="absolute inset-x-0 bottom-0 z-10 border-t border-gold-300/30 bg-ink-900/40 backdrop-blur-xl"
       >
         <div className="grid w-full grid-cols-3 gap-px bg-white/10">
           {metaItems.map((m, i) => {
@@ -164,7 +191,7 @@ export function Hero({ content }: { content?: any }) {
                 </span>
                 <span
                   title={m.value}
-                  className="relative w-full truncate text-sm sm:text-xl text-amber-300 font-black tracking-tight group-hover:text-amber-200 transition-colors"
+                  className="text-gold-gradient relative w-full truncate font-display text-base font-bold tracking-tight sm:text-[1.7rem]"
                 >
                   {m.value}
                 </span>
