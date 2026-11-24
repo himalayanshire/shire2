@@ -33,8 +33,8 @@ export const SUSTAINABILITY_DEFAULTS: SustainabilityContent = {
   featured: [
     {
       src: "/sust/Sustainability1.jpeg",
-      title: "From Kitchen to Garden",
-      caption: "From Kitchen to Garden",
+      title: "We love nature and nature loves us right back",
+      caption: "We love nature and nature loves us right back",
     },
     {
       src: "/sust/Sustainability2.png",

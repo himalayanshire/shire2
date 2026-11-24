@@ -200,7 +200,7 @@ function HeroSection({ hero }: { hero: SustainabilityHero }) {
           </motion.span>
           <motion.h1
             variants={fadeUp}
-            className="mt-6 max-w-4xl font-display text-5xl font-semibold leading-[1.02] text-emerald-950 sm:text-6xl lg:text-7xl"
+            className="mt-6 max-w-4xl font-display text-[2.4rem] font-semibold leading-[1.04] text-emerald-950 sm:text-[3rem] lg:text-[3.6rem]"
           >
             {hero.heading}
           </motion.h1>
