@@ -34,9 +34,45 @@ function originAllowed(request: Request): boolean {
   return allowed.has(originHost);
 }
 
+const DAY_MS = 86_400_000;
+
+function isoToUtc(iso: string): number {
+  const [y, m, d] = iso.split("-").map(Number);
+  return Date.UTC(y!, m! - 1, d!);
+}
+
+/**
+ * Models sometimes pick a past year for "2 Jan". Any booking link whose check-in
+ * is before today is moved forward by whole years (keeping the length of stay),
+ * and impossible dates are reset to a one-night stay.
+ */
+function fixBookingDates(text: string): string {
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const today = isoToUtc(todayIso);
+  return text.replace(
+    /checkin=(\d{4}-\d{2}-\d{2})&checkout=(\d{4}-\d{2}-\d{2})/g,
+    (_match, cin: string, cout: string) => {
+      let start = isoToUtc(cin);
+      let end = isoToUtc(cout);
+      if (Number.isNaN(start) || Number.isNaN(end)) return `checkin=${todayIso}&checkout=${todayIso}`;
+      let nights = Math.round((end - start) / DAY_MS);
+      if (nights < 1 || nights > 30) nights = 1;
+      let guard = 0;
+      while (start < today && guard++ < 5) {
+        const d = new Date(start);
+        d.setUTCFullYear(d.getUTCFullYear() + 1);
+        start = d.getTime();
+      }
+      end = start + nights * DAY_MS;
+      const fmt = (ms: number) => new Date(ms).toISOString().slice(0, 10);
+      return `checkin=${fmt(start)}&checkout=${fmt(end)}`;
+    },
+  );
+}
+
 /** Plain text only: strip control characters, hidden reasoning blocks, and cap length. */
 function cleanReply(text: string): string {
-  return text
+  return fixBookingDates(text)
     .replace(/<think>[\s\S]*?<\/think>/gi, "")
     // eslint-disable-next-line no-control-regex
     .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "")
