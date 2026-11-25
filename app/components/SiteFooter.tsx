@@ -78,7 +78,7 @@ export function SiteFooter() {
             />
             <span className="relative inline-flex h-3 w-3 rounded-full bg-gold-400" />
           </span>
-          <span className="font-display text-[5.6vw] font-semibold leading-[1.05] text-cream-50 transition-opacity group-hover:opacity-70 sm:text-3xl md:text-4xl lg:text-5xl">
+          <span className="font-display text-[4vw] font-semibold leading-[1.05] text-cream-50 transition-opacity group-hover:opacity-70 sm:text-3xl md:text-4xl lg:text-5xl">
             Fagu, Shimla, Himachal Pradesh
           </span>
           <span className="mt-1 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.2em] text-cream-200/60 transition-colors group-hover:text-gold-400 sm:ml-2 sm:mt-0 sm:text-sm">

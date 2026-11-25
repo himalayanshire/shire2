@@ -212,13 +212,14 @@
     text-wrap: balance;
   }
 
-  /* One site-wide heading scale: every heading renders 20% smaller than its
-     Tailwind step, so all pages and sections shrink by the same ratio. */
+  /* One site-wide heading scale, so all pages and sections shrink by the same
+     ratio: 0.56 of the Tailwind step (20% smaller, then a further 30%).
+     The smallest steps have floors so a heading never drops below body text. */
   :is(h1, h2, h3, h4, .font-display) {
-    --heading-scale: 0.8;
-    --text-xl: calc(1.25rem * var(--heading-scale));
-    --text-2xl: calc(1.5rem * var(--heading-scale));
-    --text-3xl: calc(1.875rem * var(--heading-scale));
+    --heading-scale: 0.56;
+    --text-xl: max(1rem, calc(1.25rem * var(--heading-scale)));
+    --text-2xl: max(1.0625rem, calc(1.5rem * var(--heading-scale)));
+    --text-3xl: max(1.125rem, calc(1.875rem * var(--heading-scale)));
     --text-4xl: calc(2.25rem * var(--heading-scale));
     --text-5xl: calc(3rem * var(--heading-scale));
     --text-6xl: calc(3.75rem * var(--heading-scale));
