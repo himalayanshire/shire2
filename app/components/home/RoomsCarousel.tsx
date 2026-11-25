@@ -101,7 +101,7 @@ export function RoomsCarousel({ rooms: provided }: { rooms?: (typeof defaultRoom
                 <span className="mx-auto mb-3 block h-px w-10 bg-gold-600/60 transition-all duration-700 group-hover:w-20 group-hover:bg-gold-500" />
                 <Link
                   href={`/rooms/${room.slug}`}
-                  className="block font-display text-2xl font-semibold leading-snug text-emerald-950 transition-colors duration-300 group-hover:text-gold-700 sm:text-4xl"
+                  className="block font-display text-5xl font-semibold leading-snug text-emerald-950 transition-colors duration-300 group-hover:text-gold-700 sm:text-6xl"
                 >
                   {room.name}
                 </Link>

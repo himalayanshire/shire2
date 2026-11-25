@@ -56,7 +56,7 @@ export const hero = {
 /* -------------------------------------------------------------------------- */
 export const brandIntro = {
   eyebrow: "Our Story",
-  heading: "Not a hotel.\nA home\nheld by the\nmountains.",
+  heading: "Not a hotel. A home\nheld by the mountains.",
   body: `Looking for a relaxing vacation, away from the crowds and in the tranquility of the Himalayas? The Himalayan Shire located in Fagu near Kufri and Shimla is just the right place for you. It is a boutique homestay surrounded by apple orchards, perfect for couples or families who want to enjoy a vacation with the privacy and comfort of a home. You could either book the entire villa if you are travelling in a group, but we also rent on per room basis.
 
 We pride ourselves not just with amazingly spacious rooms and washrooms that are unlike any other but more so with our loving and caring hospitality that will make your stay a truly delightful one. We aim and hope to send you back with lots of memories to cherish with an eagerness to visit us again soon.`,
