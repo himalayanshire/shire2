@@ -42,8 +42,8 @@ export const brand = {
 /*  HERO                                                                      */
 /* -------------------------------------------------------------------------- */
 export const hero = {
-  videoUrl: "/hero/hero.mp4",
-  poster: "/images/hero-1.jpg",
+  videoUrl: "/hero/hero-v2.mp4",
+  poster: "/images/hero-v2-poster.jpg",
   meta: [
     { label: "Location", value: "Fagu (Himachal Pradesh)" },
     { label: "Altitude", value: "7500 ft" },

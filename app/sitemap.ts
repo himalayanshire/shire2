@@ -14,6 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/contact`, lastModified: "2026-09-11", changeFrequency: "yearly", priority: 0.6 },
     { url: `${base}/faq`, lastModified: "2026-09-11", changeFrequency: "yearly", priority: 0.6 },
     { url: `${base}/pet-policy`, lastModified: "2026-09-11", changeFrequency: "yearly", priority: 0.5 },
+    { url: `${base}/privacy-policy`, lastModified: "2026-11-25", changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/pet-friendly-stay`, lastModified: "2026-09-11", changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/private-villa`, lastModified: "2026-09-11", changeFrequency: "monthly", priority: 0.8 },
   ];

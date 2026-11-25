@@ -99,8 +99,8 @@ export default function ContactPageContent() {
     }
     if (!form.checkInDate) next.checkInDate = "Check-in date is required.";
     if (!form.checkOutDate) next.checkOutDate = "Check-out date is required.";
-    if (!/^d+$/.test(form.adults.trim()) || Number(form.adults) < 1) next.adults = "Enter at least 1 adult.";
-    if (!/^d+$/.test(form.children.trim())) next.children = "Enter 0 or more children.";
+    if (!/^\d+$/.test(form.adults.trim()) || Number(form.adults) < 1) next.adults = "Enter at least 1 adult.";
+    if (!/^\d+$/.test(form.children.trim())) next.children = "Enter 0 or more children.";
     if (form.checkInDate && form.checkOutDate && form.checkOutDate <= form.checkInDate) {
       next.checkOutDate = "Check-out date must be after check-in date.";
     }

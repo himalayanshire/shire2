@@ -50,7 +50,7 @@ const FOOTER_COLUMNS: FooterColumn[] = [
 
 export function SiteFooter() {
   return (
-    <footer className="bg-lit-forest relative overflow-hidden border-t-2 border-gold-500/50 pb-10 pt-20 text-cream-200 sm:pb-12 sm:pt-28">
+    <footer className="bg-lit-forest relative overflow-hidden border-t-2 border-gold-500/50 pb-36 pt-20 text-cream-200 sm:pb-36 sm:pt-28">
       <div aria-hidden className="pointer-events-none absolute left-1/2 top-0 h-px w-1/2 -translate-x-1/2 bg-gradient-to-r from-transparent via-gold-300 to-transparent" />
       <span
         aria-hidden
@@ -78,7 +78,7 @@ export function SiteFooter() {
             />
             <span className="relative inline-flex h-3 w-3 rounded-full bg-gold-400" />
           </span>
-          <span className="font-display text-[7vw] font-semibold leading-[1.05] text-cream-50 transition-opacity group-hover:opacity-70 sm:text-3xl md:text-4xl lg:text-5xl">
+          <span className="font-display text-[5.6vw] font-semibold leading-[1.05] text-cream-50 transition-opacity group-hover:opacity-70 sm:text-3xl md:text-4xl lg:text-5xl">
             Fagu, Shimla, Himachal Pradesh
           </span>
           <span className="mt-1 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.2em] text-cream-200/60 transition-colors group-hover:text-gold-400 sm:ml-2 sm:mt-0 sm:text-sm">
@@ -89,7 +89,7 @@ export function SiteFooter() {
           </span>
         </motion.a>
 
-        <div className="mb-14 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:mb-20 lg:grid-cols-12 lg:gap-12">
+        <div className="mb-14 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:mb-20 lg:grid-cols-12 lg:gap-6 xl:gap-10">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -119,7 +119,7 @@ export function SiteFooter() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.05 * (idx + 1) }}
-              className="flex flex-col gap-4 lg:col-span-2"
+              className={`flex min-w-0 flex-col gap-4 ${col.title === "Contact" ? "lg:col-span-3" : "lg:col-span-2"}`}
             >
               <h3 className="font-sans text-[11px] font-bold uppercase tracking-[0.3em] text-gold-400">
                 {col.title}
@@ -137,7 +137,7 @@ export function SiteFooter() {
                   <li>
                     <div className="flex flex-row flex-wrap items-center gap-x-5 gap-y-2.5 sm:flex-col sm:items-start">
                       {col.phones.map((phone) => (
-                        <FooterLink key={phone.label} href={phone.href} style={{fontFamily: "Inter, Arial, sans-serif", fontWeight: 400, fontStyle: "normal", fontStretch: "normal", letterSpacing: 0, lineHeight: 1.6, color: "#F4F0E7", textTransform: "none", transform: "none"}} className="group/link relative inline-flex flex-col text-sm font-normal tracking-normal">
+                        <FooterLink key={phone.label} href={phone.href} style={{fontWeight: 400, fontStyle: "normal", fontStretch: "normal", letterSpacing: 0, lineHeight: 1.6, color: "#F4F0E7", textTransform: "none", transform: "none"}} className="group/link relative inline-flex flex-col text-sm font-normal tracking-normal">
                           {phone.label}
                           <span className="mt-0.5 h-[1.5px] w-0 rounded-full bg-gold-400 transition-all duration-300 group-hover/link:w-full" />
                         </FooterLink>
@@ -154,7 +154,7 @@ export function SiteFooter() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="flex flex-col gap-4 lg:col-span-3"
+            className="flex flex-col gap-4 lg:col-span-2"
           >
             <h3 className="font-sans text-[11px] font-bold uppercase tracking-[0.3em] text-gold-400">
               Reservations
@@ -162,14 +162,20 @@ export function SiteFooter() {
             <p className="text-sm font-medium leading-relaxed text-cream-200/60">
               Write to us or call directly for room availability, directions, and stay planning.
             </p>
-            <a href={brand.whatsapp} target="_blank" rel="noreferrer" className="luxe-button w-fit">
+            <a href={brand.whatsapp} target="_blank" rel="noreferrer" className="luxe-button w-fit whitespace-nowrap !px-5 !text-xs !tracking-[0.08em]">
               WhatsApp Us
             </a>
           </motion.div>
         </div>
 
         <div className="flex flex-col items-start justify-between gap-4 border-t border-emerald-800/60 pt-8 text-xs font-medium text-cream-200/60 sm:flex-row sm:items-center">
-          <p>Copyright 2026 The Himalayan Shire. All rights reserved.</p>
+          <p className="text-cream-200/70">
+            Copyright 2026 The Himalayan Shire. All rights reserved.
+            <span aria-hidden className="mx-2 text-gold-500">|</span>
+            <Link href="/privacy-policy" className="font-semibold underline-offset-4 transition-colors hover:text-gold-400 hover:underline">
+              Privacy Policy
+            </Link>
+          </p>
           <div className="flex items-center gap-5">
             {brand.socials.map((social) => (
               <a key={social.label} href={social.href} className="inline-flex items-center gap-1.5 transition-colors hover:text-gold-400">

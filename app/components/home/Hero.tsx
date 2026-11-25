@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { hero } from "@/lib/content";
 import type { ReactNode } from "react";
@@ -25,20 +25,6 @@ export function Hero({ content }: { content?: any }) {
 
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
 
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, { stiffness: 40, damping: 20 });
-  const springY = useSpring(mouseY, { stiffness: 40, damping: 20 });
-
-  function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const yPos = (e.clientY - rect.top) / rect.height - 0.5;
-    mouseX.set(x * 40);
-    mouseY.set(yPos * 40);
-  }
-
   const restMeta = (Array.isArray(data.meta) ? data.meta : [])
     .filter((m: any) => !/location/i.test(m.label) && !/kalpa/i.test(m.value))
     .map((m: any) =>
@@ -59,7 +45,6 @@ export function Hero({ content }: { content?: any }) {
     <section
       ref={ref}
       id="top"
-      onMouseMove={handleMouseMove}
       className="relative h-[70vh] min-h-[480px] w-full overflow-hidden bg-pine-100 max-sm:aspect-[128/125] max-sm:h-auto max-sm:min-h-0 sm:h-[80vh] sm:min-h-[560px] lg:h-[92vh]"
     >
       {/*
@@ -72,17 +57,9 @@ export function Hero({ content }: { content?: any }) {
           className="absolute inset-0 overflow-hidden"
         >
           <motion.div
-            initial={{ scale: 1.15, opacity: 0 }}
-            animate={{ scale: 1.08, opacity: 1 }}
-            transition={{
-              opacity: { duration: 1.5, ease: [0.22, 1, 0.36, 1] },
-              scale: {
-                duration: 20,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut",
-              },
-            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
             className="absolute inset-0"
           >
             {/* Poster is the page's LCP candidate (hero fills the first
@@ -95,20 +72,14 @@ export function Hero({ content }: { content?: any }) {
               loop
               muted
               playsInline
-              preload="metadata"
+              preload="auto"
               poster={poster}
-              className="absolute inset-0 h-full w-full object-cover object-center brightness-125"
+              className="absolute inset-0 h-full w-full object-cover object-center"
               aria-hidden="true"
             >
               <source src={videoUrl} type="video/mp4" />
             </video>
           </motion.div>
-
-          {/* Light green tint wash */}
-          <div
-            className="absolute inset-0 pointer-events-none bg-emerald-200/25 mix-blend-soft-light"
-            aria-hidden
-          />
 
           {/* Cinematic dark overlay */}
           <div className="absolute inset-0 hero-overlay pointer-events-none" />
@@ -118,19 +89,12 @@ export function Hero({ content }: { content?: any }) {
             className="absolute inset-0 pointer-events-none"
             style={{
               background:
-                "radial-gradient(circle at center, transparent 35%, rgba(8,18,18,0.7) 100%)",
+                "radial-gradient(circle at center, transparent 55%, rgba(8,18,18,0.35) 100%)",
             }}
             aria-hidden
           />
         </motion.div>
       </div>
-
-      {/* Floating ambient glow orb — reacts to cursor */}
-      <motion.div
-        style={{ x: springX, y: springY }}
-        className="pointer-events-none absolute left-1/2 top-1/3 h-[22rem] w-[22rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-300/25 blur-[100px] mix-blend-screen sm:h-[28rem] sm:w-[28rem] lg:h-[32rem] lg:w-[32rem] lg:blur-[120px]"
-        aria-hidden
-      />
 
       {/* Fine gold inset frame — desktop only, frames the film like a lens */}
       <motion.div

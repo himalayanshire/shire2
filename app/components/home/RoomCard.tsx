@@ -220,7 +220,7 @@ export function RoomCard({ room }: { room: Room }) {
       {/* BODY */}
       <div className="flex grow flex-col gap-4 px-5 pb-5 pt-5">
         {/* Name */}
-        <h3 className="font-display text-2xl font-bold leading-tight text-ink-900 sm:text-[1.7rem]">
+        <h3 className="font-display text-2xl font-bold leading-tight text-ink-900 sm:text-3xl">
           {room.name}
         </h3>
 

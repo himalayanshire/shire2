@@ -1,8 +1,11 @@
 import type { MetadataRoute } from "next";
 
-// NOTE: public/robots.txt takes precedence when present and is the live
-// file. Keep both in sync; this route is the fallback.
+// NOTE: the live (Vercel) site serves this route, while a local server serves
+// public/robots.txt. Keep the rules in both files the same.
 const AI_CRAWLERS = [
+  "Googlebot",
+  "Bingbot",
+  "OAI-SearchBot",
   "GPTBot",
   "ChatGPT-User",
   "ClaudeBot",

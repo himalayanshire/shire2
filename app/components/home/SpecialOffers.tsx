@@ -43,7 +43,7 @@ export function SpecialOffers() {
                       </span>
                     </div>
 
-                    <h3 className="font-display text-xl sm:text-[1.35rem] font-bold leading-snug text-emerald-950 tracking-tight">
+                    <h3 className="font-display text-xl font-bold leading-snug text-emerald-950 tracking-tight">
                       {offer.title}
                     </h3>
 

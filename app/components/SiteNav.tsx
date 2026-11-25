@@ -98,7 +98,7 @@ export function SiteNav() {
             priority
           />
           <div className="flex flex-col flex-1 ml-3 pr-2 xl:pr-0 leading-tight">
-            <span className="font-display font-bold text-emerald-900 text-[13px] leading-tight sm:text-2xl tracking-wide">
+            <span className="font-display font-bold text-emerald-900 text-[12px] leading-tight sm:text-[1.5rem] sm:tracking-wide">
               The Himalayan Shire
             </span>
             <span className="font-bold text-emerald-800 text-[11px] sm:text-sm tracking-wider whitespace-nowrap">

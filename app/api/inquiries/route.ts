@@ -51,20 +51,21 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const inquiry = parsed.data;
-  const message = formatInquiryMessage(inquiry);
+  const fields = inquiryFields(parsed.data);
 
   const emailResult = await sendInquiryEmail({
     to: INQUIRY_TO_EMAIL,
-    replyTo: inquiry.email || undefined,
-    subject: `Website inquiry from ${inquiry.name}`,
-    text: message,
+    replyTo: parsed.data.email || undefined,
+    subject: `Website inquiry from ${parsed.data.name}`,
+    text: formatInquiryMessage(fields),
+    fields,
   });
 
   if (!emailResult.sent) {
+    console.error(`[inquiry] not delivered: ${emailResult.reason}`);
     return NextResponse.json(
       {
-        error: emailResult.reason,
+        error: "Inquiry could not be sent. Please call or WhatsApp us.",
         delivered: false,
       },
       { status: 503 }
@@ -74,78 +75,94 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ ok: true, delivered: true });
 }
 
-function formatInquiryMessage(inquiry: z.infer<typeof inquirySchema>) {
-  return [
-    "New website inquiry",
-    "",
-    `Name: ${inquiry.name}`,
-    `Phone: ${inquiry.phone}`,
-    `Email: ${inquiry.email || "Not provided"}`,
-    `Check-in date: ${inquiry.checkInDate}`,
-    `Check-out date: ${inquiry.checkOutDate}`,
-    `Adults (8 yrs and above): ${inquiry.adults}`,
-    `Children (7 yrs and below): ${inquiry.children}`,
-  ].join("\n");
+/** Every value from the form, labelled. All email routes are built from this. */
+function inquiryFields(inquiry: z.infer<typeof inquirySchema>): Record<string, string> {
+  return {
+    Name: inquiry.name,
+    Phone: inquiry.phone,
+    Email: inquiry.email || "Not provided",
+    "Check-in date": inquiry.checkInDate,
+    "Check-out date": inquiry.checkOutDate,
+    "Adults (8 yrs and above)": String(inquiry.adults),
+    "Children (7 yrs and below)": String(inquiry.children),
+  };
 }
 
+function formatInquiryMessage(fields: Record<string, string>) {
+  return ["New website inquiry", "", ...Object.entries(fields).map(([k, v]) => `${k}: ${v}`)].join("\n");
+}
+
+type SendResult = { sent: true } | { sent: false; reason: string };
+
+/** Tries the configured mail route first, then the free one, so no enquiry is lost. */
 async function sendInquiryEmail({
   to,
   replyTo,
   subject,
   text,
+  fields,
 }: {
   to: string;
   replyTo?: string;
   subject: string;
   text: string;
-}): Promise<{ sent: true } | { sent: false; reason: string }> {
+  fields: Record<string, string>;
+}): Promise<SendResult> {
   const smtpUser = process.env.SMTP_USER;
   const smtpPassword = process.env.SMTP_PASSWORD;
   const resendKey = process.env.RESEND_API_KEY;
 
   if (smtpUser && smtpPassword) {
-    return sendViaSmtp({ to, replyTo, subject, text, smtpUser, smtpPassword });
+    const result = await sendViaSmtp({ to, replyTo, subject, text, smtpUser, smtpPassword });
+    if (result.sent) return result;
+    console.error(`[inquiry] SMTP failed: ${result.reason}`);
+  } else if (resendKey) {
+    const result = await sendViaResend({ to, replyTo, subject, text, resendKey });
+    if (result.sent) return result;
+    console.error(`[inquiry] Resend failed: ${result.reason}`);
   }
 
-  if (resendKey) {
-    return sendViaResend({ to, replyTo, subject, text, resendKey });
-  }
-
-  // No mail credentials configured: use FormSubmit (free, no key) so enquiries still arrive.
-  return sendViaFormSubmit({ to, replyTo, subject, text });
+  return sendViaFormSubmit({ to, replyTo, subject, fields });
 }
 
+/** FormSubmit: free, no key. The inbox owner confirms it once by email. */
 async function sendViaFormSubmit({
   to,
   replyTo,
   subject,
-  text,
+  fields,
 }: {
   to: string;
   replyTo?: string;
   subject: string;
-  text: string;
-}): Promise<{ sent: true } | { sent: false; reason: string }> {
+  fields: Record<string, string>;
+}): Promise<SendResult> {
   try {
     const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(to)}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        // FormSubmit requires requests to name the website they come from.
+        Origin: "https://www.thehimalayanshire.com",
+        Referer: "https://www.thehimalayanshire.com/contact",
+      },
       body: JSON.stringify({
+        ...fields,
         _subject: subject,
-        _template: "box",
+        _template: "table",
         _captcha: "false",
-        ...(replyTo ? { email: replyTo, _replyto: replyTo } : null),
-        message: text,
+        ...(replyTo ? { _replyto: replyTo } : null),
       }),
       signal: AbortSignal.timeout(15_000),
     });
     const data = (await response.json().catch(() => ({}))) as { success?: string | boolean; message?: string };
     if (!response.ok || String(data.success) !== "true") {
-      return { sent: false, reason: data.message || "Email delivery failed." };
+      return { sent: false, reason: data.message || `FormSubmit HTTP ${response.status}` };
     }
     return { sent: true };
   } catch {
-    return { sent: false, reason: "Email delivery failed." };
+    return { sent: false, reason: "FormSubmit unreachable" };
   }
 }
 

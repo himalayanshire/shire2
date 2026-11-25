@@ -1,7 +1,7 @@
 {
   "hero": {
-    "videoUrl": "/hero/hero.mp4",
-    "poster": "/images/hero-1.jpg"
+    "videoUrl": "/hero/hero-v2.mp4",
+    "poster": "/images/hero-v2-poster.jpg"
   },
   "about": {
     "title": "A Heritage Mountain Retreat",
